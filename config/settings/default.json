@@ -1,0 +1,10 @@
+{
+	"project": {
+    "owner": "Talisman Consulting, LLC.",
+		"name": "talismanpkgs",
+    "organization": "talismanco",
+    "repository": "https://github.com/talismanco/talismanpkgs",
+    "version": "1.3.0",
+    "nixpkgs_channel": "nixos-20.09"
+	}
+}

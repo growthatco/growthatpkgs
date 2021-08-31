@@ -1,0 +1,155 @@
+name: Integration
+on:
+  pull_request:
+    branches:
+      - master
+      - next
+      - alpha
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-18.04
+    if: "!contains(github.event.commits[0].message, '[skip ci]')"
+    steps:
+      - name: Checkout
+        id: test-1
+        uses: actions/checkout@v1
+
+      - name: Install Nix
+        id: test-2
+        uses: cachix/install-nix-action@v12
+        with:
+          skip_adding_nixpkgs_channel: true
+
+      - name: Cachix
+        id: test-3
+        uses: cachix/cachix-action@v8
+        with:
+          name: tal-talismanpkgs-int
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Download Nix Dependenices
+        id: test-4
+        run: |
+          nix-shell --pure
+
+      # === bazel ===          
+
+      - name: Test `bazel`
+        id: test-bazel
+        run: |
+          nix-shell --pure --run "bazel version"
+
+      # === consul ===          
+
+      - name: Test `consul`
+        id: test-consul
+        run: |
+          nix-shell --pure --run "consul version"
+
+      # === golangci-lint ===          
+
+      - name: Test `golangci-lint`
+        id: test-golangci-lint
+        run: |
+          nix-shell --pure --run "golangci-lint version"
+
+      # === google-cloud-sdk ===          
+
+      - name: Test `gcloud`
+        id: test-gcloud
+        run: |
+          nix-shell --pure --run "gcloud version"
+
+      # === helm ===          
+
+      - name: Test `helm`
+        id: test-helm
+        run: |
+          nix-shell --pure --run "helm version"
+
+      # === jq ===          
+
+      - name: Test `jq`
+        id: test-jq
+        run: |
+          nix-shell --pure --run "jq --version"
+
+      # === k9s ===          
+
+      - name: Test `k9s`
+        id: test-k9s
+        run: |
+          nix-shell --pure --run "k9s version"
+
+      # === mirror ===          
+
+      - name: Test `mirror`
+        id: test-mirror
+        run: |
+          nix-shell --pure --run "mirror version"
+
+      # === nodejs ===          
+
+      - name: Test `node`
+        id: test-node
+        run: |
+          nix-shell --pure --run "node --version"
+
+      - name: Test `npm`
+        id: test-npm
+        run: |
+          nix-shell --pure --run "npm --version"
+
+      # === nomad ===
+
+      - name: Test `nomad`
+        id: test-nomad
+        run: |
+          nix-shell --pure --run "nomad version"
+
+      # === openjdk ===
+
+      - name: Test `jshell`
+        id: test-jshell
+        run: |
+          nix-shell --pure --run "nomad version"
+
+      # === python ===
+
+      - name: Test `python`
+        id: test-python
+        run: |
+          nix-shell --pure --run "python --version"     
+          
+      # === rust ===
+
+      - name: Test `cargo`
+        id: test-cargo
+        run: |
+          nix-shell --pure --run "cargo version"         
+
+      - name: Test `clippy`
+        id: test-clippy
+        run: |
+          nix-shell --pure --run "cargo clippy --version"          
+
+      - name: Test `rustc`
+        id: test-rustc
+        run: |
+          nix-shell --pure --run "rustc --version"    
+          
+      # === skaffold ===
+
+      - name: Test `skaffold`
+        id: test-skaffold
+        run: |
+          nix-shell --pure --run "skaffold version"      
+          
+      # === waypoint ===
+
+      - name: Test `waypoint`
+        id: test-waypoint
+        run: |
+          nix-shell --pure --run "waypoint version"                     

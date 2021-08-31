@@ -1,0 +1,8 @@
+[submodule "modules/nixpkgs-unstable"]
+	path = modules/nixpkgs-unstable
+	url = git@github.com:nixos/nixpkgs
+	branch = nixpkgs-unstable
+[submodule "modules/nixpkgs-21.05"]
+	path = modules/nixpkgs-21.05
+	url = git@github.com:nixos/nixpkgs
+	branch = release-21.05
