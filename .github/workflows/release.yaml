@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - next
       - alpha
 
 jobs:
@@ -40,11 +39,11 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v12
 
-      - name: Cachix
-        uses: cachix/cachix-action@v8
-        with:
-          name: gtc-growthatpkgs-rel
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      # - name: Cachix
+      #   uses: cachix/cachix-action@v8
+      #   with:
+      #     name: gtc-growthatpkgs-rel
+      #     authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Install Node.js dependencies
         run: |
