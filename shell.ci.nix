@@ -2,7 +2,7 @@
 
 let inherit (sources) nixpkgs;
 in nixpkgs.mkShell rec {
-  name = "integration.growthatpkgs";
+  name = "ci.growthatpkgs";
   env = nixpkgs.buildEnv {
     name = name;
     paths = buildInputs;
