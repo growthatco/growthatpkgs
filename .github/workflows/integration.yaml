@@ -28,6 +28,7 @@ jobs:
 
   test:
     name: Test
+    needs: setup
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
