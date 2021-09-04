@@ -33,7 +33,7 @@ jobs:
       - name: Test `act`
         id: test-act
         run: |
-          nix-shell shell.integration.nix --pure --run "act version"
+          nix-shell shell.integration.nix --pure --run "act --version"
 
       # === bazel ===
 
