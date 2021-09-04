@@ -16,6 +16,10 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v13
 
+      - name: Build Nix Tools
+        run: |
+          nix-shell shell.integration.nix --pure
+
       # === act ===
 
       - name: Test `act`
