@@ -15,8 +15,6 @@ jobs:
 
       - name: Install Nix
         uses: cachix/install-nix-action@v13
-        with:
-          skip_adding_nixpkgs_channel: true
 
       - name: Cachix
         uses: cachix/cachix-action@v10
@@ -37,8 +35,6 @@ jobs:
 
       - name: Install Nix
         uses: cachix/install-nix-action@v13
-        with:
-          skip_adding_nixpkgs_channel: true
 
       - name: Cachix
         uses: cachix/cachix-action@v10
