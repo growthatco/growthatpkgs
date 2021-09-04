@@ -25,4 +25,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          nix-shell --run "npm run release" shell.release.nix
+          nix-shell shell.cd.nix --run "npm run release" 
