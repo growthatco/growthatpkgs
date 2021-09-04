@@ -19,7 +19,7 @@ jobs:
       - name: Cachix
         uses: cachix/cachix-action@v10
         with:
-          name: gtc-growthatpkgs-rel
+          name: gtc-growthatpkgs-int
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Download Nix Dependenices
