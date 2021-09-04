@@ -6,26 +6,6 @@ on:
       - next
 
 jobs:
-  setup:
-    name: Setup
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install Nix
-        uses: cachix/install-nix-action@v13
-
-      - name: Cachix
-        uses: cachix/cachix-action@v10
-        with:
-          name: gtc-growthatpkgs-int
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-
-      - name: Build Nix Dependenices
-        run: |
-          nix-shell shell.integration.nix --pure
-
   test:
     name: Test
     needs: setup
@@ -36,12 +16,6 @@ jobs:
 
       - name: Install Nix
         uses: cachix/install-nix-action@v13
-
-      - name: Cachix
-        uses: cachix/cachix-action@v10
-        with:
-          name: gtc-growthatpkgs-int
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       # === act ===
 
