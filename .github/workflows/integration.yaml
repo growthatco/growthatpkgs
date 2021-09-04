@@ -24,7 +24,7 @@ jobs:
 
       - name: Download Nix Dependenices
         run: |
-          nix-shell shell.integration.nix --pure
+          nix-shell shell.integration.nix
 
   test:
     name: Test
@@ -48,121 +48,121 @@ jobs:
       - name: Test `act`
         id: test-act
         run: |
-          nix-shell shell.integration.nix --pure --run "act --version"
+          nix-shell shell.integration.nix --run "act --version"
 
       # === bazel ===
 
       - name: Test `bazel`
         id: test-bazel
         run: |
-          nix-shell shell.integration.nix --pure --run "bazel version"
+          nix-shell shell.integration.nix --run "bazel version"
 
       # === clippy ===
 
       - name: Test `clippy`
         id: test-clippy
         run: |
-          nix-shell shell.integration.nix --pure --run "clippy-driver --version"
+          nix-shell shell.integration.nix --run "clippy-driver --version"
 
       # === consul ===
 
       - name: Test `consul`
         id: test-consul
         run: |
-          nix-shell shell.integration.nix --pure --run "consul version"
+          nix-shell shell.integration.nix --run "consul version"
 
       # === go ===
 
       - name: Test `go`
         id: test-go
         run: |
-          nix-shell shell.integration.nix --pure --run "go version"
+          nix-shell shell.integration.nix --run "go version"
 
       # === golangci-lint ===
 
       - name: Test `golangci-lint`
         id: test-golangci-lint
         run: |
-          nix-shell shell.integration.nix --pure --run "golangci-lint version"
+          nix-shell shell.integration.nix --run "golangci-lint version"
 
       # === google-cloud-sdk ===
 
       - name: Test `gcloud`
         id: test-gcloud
         run: |
-          nix-shell shell.integration.nix --pure --run "gcloud version"
+          nix-shell shell.integration.nix --run "gcloud version"
 
       # === helm ===
 
       - name: Test `helm`
         id: test-helm
         run: |
-          nix-shell shell.integration.nix --pure --run "helm version"
+          nix-shell shell.integration.nix --run "helm version"
 
       # === jq ===
 
       - name: Test `jq`
         id: test-jq
         run: |
-          nix-shell shell.integration.nix --pure --run "jq --version"
+          nix-shell shell.integration.nix --run "jq --version"
 
       # === k9s ===
 
       - name: Test `k9s`
         id: test-k9s
         run: |
-          nix-shell shell.integration.nix --pure --run "k9s version"
+          nix-shell shell.integration.nix --run "k9s version"
 
       # === nodejs ===
 
       - name: Test `nodejs`
         id: test-nodejs
         run: |
-          nix-shell shell.integration.nix --pure --run "node --version"
+          nix-shell shell.integration.nix --run "node --version"
 
       - name: Test `npm`
         id: test-npm
         run: |
-          nix-shell shell.integration.nix --pure --run "npm --version"
+          nix-shell shell.integration.nix --run "npm --version"
 
       # === nomad ===
 
       - name: Test `nomad`
         id: test-nomad
         run: |
-          nix-shell shell.integration.nix --pure --run "nomad version"
+          nix-shell shell.integration.nix --run "nomad version"
 
       # === openjdk ===
 
       - name: Test `openjdk`
         id: test-openjdk
         run: |
-          nix-shell shell.integration.nix --pure --run "jshell --version"
+          nix-shell shell.integration.nix --run "jshell --version"
 
       # === python ===
 
       - name: Test `python`
         id: test-python
         run: |
-          nix-shell shell.integration.nix --pure --run "python --version"
+          nix-shell shell.integration.nix --run "python --version"
 
       # === rust ===
 
       - name: Test `rust`
         id: test-rust
         run: |
-          nix-shell shell.integration.nix --pure --run "rustc --version"
+          nix-shell shell.integration.nix --run "rustc --version"
 
       # === skaffold ===
 
       - name: Test `skaffold`
         id: test-skaffold
         run: |
-          nix-shell shell.integration.nix --pure --run "skaffold version"
+          nix-shell shell.integration.nix --run "skaffold version"
 
       # === waypoint ===
 
       - name: Test `waypoint`
         id: test-waypoint
         run: |
-          nix-shell shell.integration.nix --pure --run "waypoint version"
+          nix-shell shell.integration.nix --run "waypoint version"
