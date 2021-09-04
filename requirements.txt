@@ -1,3 +1,4 @@
+black
 jsonmerge
 invoke
 python-dotenv

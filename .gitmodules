@@ -6,3 +6,7 @@
 	path = modules/nixpkgs-21.05
 	url = git@github.com:nixos/nixpkgs
 	branch = release-21.05
+[submodule "modules/nixpkgs-20.09"]
+	path = modules/nixpkgs-20.09
+	url = git@github.com:nixos/nixpkgs
+	branch = release-20.09

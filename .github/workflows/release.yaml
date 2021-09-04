@@ -9,59 +9,48 @@ on:
 jobs:
   setup:
     name: Setup
-    runs-on: ubuntu-18.04
-    if: "!contains(github.event.commits[0].message, '[skip ci]')"
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        id: setup-1
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Install Nix
-        id: setup-2
-        uses: cachix/install-nix-action@v12
+        uses: cachix/install-nix-action@v13
         with:
           skip_adding_nixpkgs_channel: true
 
-      - name: Cachix
-        id: setup-3
-        uses: cachix/cachix-action@v8
-        with:
-          name: tal-talismanpkgs-rel
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+      # - name: Cachix
+      #   uses: cachix/cachix-action@v8
+      #   with:
+      #     name: gtc-growthatpkgs-rel
+      #     authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Download Nix Dependenices
-        id: setup-4
         run: |
           nix-shell --pure shell.release.nix
 
   release:
     name: Release
     needs: setup
-    runs-on: ubuntu-18.04
-    if: "!contains(github.event.commits[0].message, '[skip ci]')"
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        id: release-1
         uses: actions/checkout@v1
 
       - name: Install Nix
-        id: release-2
         uses: cachix/install-nix-action@v12
 
       - name: Cachix
-        id: release-3
         uses: cachix/cachix-action@v8
         with:
-          name: tal-talismanpkgs-rel
+          name: gtc-growthatpkgs-rel
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Install Node.js dependencies
-        id: release-4
         run: |
           nix-shell --run "npm ci" shell.release.nix
 
       - name: Release
-        id: release-5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -71,15 +60,12 @@ jobs:
   merge:
     name: Merge
     needs: release
-    runs-on: ubuntu-18.04
-    if: "!contains(github.event.commits[0].message, '[skip ci]') && (contains(github.ref, 'master') || contains(github.ref, 'alpha'))"
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        id: merge-1
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: "Merge ${{ github.ref }} -> next"
-        id: merge-2
         uses: devmasx/merge-branch@v1.3.1
         with:
           type: now

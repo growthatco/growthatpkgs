@@ -1,247 +1,122 @@
-{ sources ? import ./nix { }, util ? import ./util { } }:
+{ derivations ? import ./derivations { }, sources ? import ./nix { }
+, util ? import ./util { } }:
 
 let
-  inherit (sources)
-    nixpkgs
-  ;
-  inherit (builtins) 
-    stringLength
-    toString
-  ;
-
-  nixpkgsDir = { version }: ./. + "/modules/" + version + "/pkgs";
-  nixpkgs-unstable = util.nixpkgsDirmodulesDir + ""
-  nixpkgs-21-05 =
-
-  nixpkgsDirectory = ./. + "/modules/nixpkgs/pkgs";
-
-  rootFile = util.rootFile { inherit nixpkgsDirectory; };
-  packageFile = util.packageFile { inherit nixpkgsDirectory; };
-
-  build = { name, version, parent ? "", ... }@a:
-    { ... }@b:
-    if stringLength parent == 0 then
-      nixpkgs.callPackage (./. + "/pkgs/${name}/versions/${version}.nix")
-      (a // b)
-    else
-      nixpkgs.callPackage
-      (./. + "/pkgs/${name}/versions/${parent}/${version}.nix") (a // b);
-
-  package = package: version:
-    { ... }@args:
-    nixpkgs.callPackage (./. + "/pkgs/${package}/versions/${version}.nix")
-    (args // { });
-
+  nixpkgs-unstable = util.nixpkgs-dir { version = "unstable"; };
+  nixpkgs-21-05 = util.nixpkgs-dir { version = "21.05"; };
+  nixpkgs-20-09 = util.nixpkgs-dir { version = "20.09"; };
 in rec {
-
-  # === bazel ===
-
-  bazelPackageDirectory = "development/tools/build-managers/bazel";
-  bazelPackageFile = packageFile { packageDirectory = bazelPackageDirectory; };
-
-  bazel = bazel_3_7_2;
-
-  bazel_3_7_2 = build {
-    name = "bazel";
+  act = act-0-2-23;
+  act-0-2-23 = util.init { tool = "act"; version = "0.2.23"; };
+  
+  bazel = bazel-4-1-0;
+  bazel-4-1-0 = util.init {
+    tool = "bazel";
+    version = "4.1.0";
+  };
+  bazel-3-7-2 = util.init {
+    tool = "bazel";
     version = "3.7.2";
-    parent = "3";
-    sha256 = "1cfrbs23lg0jnl22ddylx3clcjw7bdpbix7r5lqibab346s5n9fy";
-    packageFile = bazelPackageFile;
-  } {
-    buildJdk = openjdk_11_headless;
-    buildJdkName = "java11";
-    runJdk = openjdk_11_headless;
-    bazel_self = bazel_3_7_2;
   };
 
-  # === consul ===
+  clippy = clippy-1-52-1;
+  clippy-1-52-1 = util.init {
+    tool = "clippy";
+    version = "1.52.1";
+  };
 
-  consulPackageDirectory = "servers/consul";
-  consulPackageFile =
-    packageFile { packageDirectory = consulPackageDirectory; };
+  consul = consul-1-10-0;
+  consul-1-10-0 = util.init {
+    tool = "consul";
+    version = "1.10.0";
+  };
 
-  consul = consul_1_9_0;
+  go = go-1-16-5;
+  go-1-16-5 = util.init {
+    tool = "go";
+    version = "1.16.5";
+  };
 
-  consul_1_9_0 = build {
-    name = "consul";
-    version = "1.9.0";
-    packageFile = consulPackageFile;
-  } { buildHashiCorpPackage = util.buildHashiCorpPackage; };
-
-  # === go ===
-
-  goPackageDirectory = "development/compilers/go";
-  goPackageFile = packageFile { packageDirectory = goPackageDirectory; };
-
-  go = go_1_16_4;
-
-  go_1_16_4 = build {
-    name = "go";
-    version = "1.16.4";
-    parent = "1.16";
-    sha256 = "00rmsiq4h44r5dr5iyshv9b56jq7cakmailq2wcd6xqn59p6nkxf";
-    packageFile = goPackageFile;
-  } { };
-
-  # === golangci-lint ===
-
-  golangci-lintPackageDirectory = "development/tools/golangci-lint";
-  golangci-lintPackageFile =
-    packageFile { packageDirectory = golangci-lintPackageDirectory; };
-
-  golangci-lint = golangci-lint_1_41_1;
-
-  golangci-lint_1_41_1 = build {
-    name = "golangci-lint";
+  golangci-lint = golangci-lint-1-41-1;
+  golangci-lint-1-41-1 = util.init {
+    tool = "golangci-lint";
     version = "1.41.1";
-    sha256 = "1lcfp924zc98rlsv68v7z7f7i7d8bzijmlrahsbqivmhdd9j86pg";
-    vendorSha256 = "1wrydl06v1x99iqna2m445xzldwnl1kx89dsnk2ns5r1j904aimk";
-    packageFile = golangci-lintPackageFile;
-  } { };
+  };
 
-  # === google-cloud-sdk ===
+  google-cloud-sdk = google-cloud-sdk-345-0-0;
+  google-cloud-sdk-345-0-0 = util.init {
+    tool = "google-cloud-sdk";
+    version = "345.0.0";
+  };
 
-  google-cloud-sdk = google-cloud-sdk_268_0_0;
-  google-cloud-sdk-gce = google-cloud-sdk-gce_268_0_0;
-  google-cloud-sdk_268_0_0 = package "google-cloud-sdk" "268.0.0" { };
-  google-cloud-sdk-gce_268_0_0 = google-cloud-sdk.override { withGce = true; };
+  helm = helm-3-6-1;
+  helm-3-6-1 = util.init {
+    tool = "helm";
+    version = "3.6.1";
+  };
 
-  # === helm ===
-
-  helmPackageDirectory = "applications/networking/cluster/helm";
-  helmPaackageFile = packageFile { packageDirectory = helmPackageDirectory; };
-
-  helm = helm_3_6_0;
-
-  helm_3_6_0 = build {
-    name = "helm";
-    version = "3.6.0";
-    sha256 = "05hkqdgkkaxcqzc55jja809h9nggxv2k2m48sk3yif2cmxvvnmmi";
-    vendorSha256 = "06ccsy30kd68ml13l5k7d4225vlax3fm2pi8dapsyr4gdr234c1x";
-    packageFile = helmPaackageFile;
-  } { };
-
-  # === jq ===
-
-  jqPackageDirectory = "development/tools/jq";
-  jqPaackageFile = packageFile { packageDirectory = jqPackageDirectory; };
-
-  jq = jq_1_6;
-
-  jq_1_6 = build {
-    name = "jq";
+  jq = jq-1-6;
+  jq-1-6 = util.init {
+    tool = "jq";
     version = "1.6";
-    sha256 = "0wmapfskhzfwranf6515nzmm84r7kwljgfs7dg6bjgxakbicis2x";
-    vendorSha256 = "1a7b29jgyqhx2ihxrd7i1vvdjlr8flfzc6n0xj303d01ljf7fhqh";
-    packageFile = jqPaackageFile;
-  } { };
+  };
 
-  # === k9s ===
-
-  k9sPackageDirectory = "applications/networking/cluster/k9s";
-  k9sPaackageFile = packageFile { packageDirectory = k9sPackageDirectory; };
-
-  k9s = k9s_0_24_10;
-
-  k9s_0_24_10 = build {
-    name = "k9s";
+  k9s = k9s-0-24-10;
+  k9s-0-24-10 = util.init {
+    tool = "k9s";
     version = "0.24.10";
-    sha256 = "0n5z2xkn8xp8z8wfbbrixsz9b9svzmk0dmx1r1hrzavnbm3qhr92";
-    vendorSha256 = "1a7b29jgyqhx2ihxrd7i1vvdjlr8flfzc6n0xj303d01ljf7fhqh";
-    packageFile = k9sPaackageFile;
-  } { };
+  };
 
-  # === mirror ===
+  nodejs = nodejs-16-4-0;
+  nodejs-16-4-0 = util.init {
+    tool = "nodejs";
+    version = "16.4.0";
+  };
 
-  mirror = mirror_1_0_0;
-  mirror_1_0_0 = package "mirror" "1.0.0" { };
+  nomad = nomad-1-0-8;
+  nomad-1-0-8 = util.init {
+    tool = "nomad";
+    version = "1.0.8";
+  };
 
-  # === nodejs ===
+  openjdk = openjdk-16-36;
+  openjdk-11-0-10-9 = util.init {
+    tool = "openjdk";
+    version = "11.0.10+9";
+  };
+  openjdk-16-36 = util.init {
+    tool = "openjdk";
+    version = "16+36";
+  };
 
-  nodejs = nodejs_12_18_3;
-  nodejs_12_18_3 = package "nodejs" "12.18.3" { };
-  nodejs_10_19_0 = package "nodejs" "10.19.0" { };
+  python = python-3-9-4;
+  python-3-7-10 = util.init {
+    tool = "python";
+    version = "3.7.10";
+  };
+  python-3-9-4 = util.init {
+    tool = "python";
+    version = "3.9.4";
+  };
 
-  # === nomad ===
+  rust = rust-1-52-1;
+  rust-1-52-1 = util.init {
+    tool = "rust";
+    version = "1.52.1";
+  };
 
-  nomadPackageDirectory = "applications/networking/cluster/nomad";
-  nomadPaackageFile = packageFile { packageDirectory = nomadPackageDirectory; };
+  rustfmt = rustfmt-1-52-1;
+  rustfmt-1-52-1 = util.init { tool = "rustfmt"; version = "1.52.1"; };
 
-  nomad = nomad_1_0_6;
+  skaffold = skaffold-1-20-0;
+  skaffold-1-20-0 = util.init {
+    tool = "skaffold";
+    version = "1.20.0";
+  };
 
-  nomad_1_0_6 = build {
-    name = "nomad";
-    version = "1.0.6";
-    packageFile = nomadPaackageFile;
-  } { buildHashiCorpPackage = util.buildHashiCorpPackage; };
-
-  # === openjdk ===
-
-  openjdk = openjdk_16;
-  openjdk_headless = openjdk_16_headless;
-
-  openjdk_16 = nixpkgs.jdk16;
-  openjdk_16_headless = nixpkgs.jdk16_headless;
-  openjdk_11 = nixpkgs.jdk11;
-  openjdk_11_headless = nixpkgs.jdk11_headless;
-  openjdk_8 = nixpkgs.jdk8;
-  openjdk_8_headless = nixpkgs.jdk8_headless;
-
-  # === python ===
-
-  # python_nixpkgs_dir = package_dir "development/interpreters/python";
-  # python = python_3_9_4;
-
-  # python_3_9_4 = build {
-  #   name = "python";
-  #   version = "3.9.4";
-  #   dir = python_nixpkgs_dir;
-  # } { };
-
-  # python = python_3_9_4;
-  # python_3_9_4 = nixpkgs.pkgs.python39;
-
-  # === rust ===
-
-  # cargo = cargo_1_43_0;
-  # cargo_1_43_0 = rust_1_45_2builds.cargo;
-
-  # clippy = clippy_1_43_0;
-  # clippy_1_43_0 = rust_1_45_2builds.clippy;
-
-  # rust = rust_1_45_2;
-  # rustbuilds = rust.packages.stable;
-  # rust_1_45_2 = nixpkgs.pkgs.rust_1_45;
-  # rust_1_45_2builds = rust_1_45.packages.stable;
-
-  # rustc = rustc_1_45_2;
-  # rustc_1_45_2 = rust_1_45_2builds.rustc;
-
-  # === skaffold ===
-
-  skaffoldPackageDirectory = "development/tools/skaffold";
-  skaffoldPaackageFile =
-    packageFile { packageDirectory = skaffoldPackageDirectory; };
-
-  skaffold = skaffold_1_24_1;
-
-  skaffold_1_24_1 = build {
-    name = "skaffold";
-    version = "1.24.1";
-    packageFile = skaffoldPaackageFile;
-  } { };
-
-  # === waypoint ===
-
-  waypointPackageDirectory = "applications/networking/cluster/waypoint";
-  waypointPaackageFile =
-    packageFile { packageDirectory = waypointPackageDirectory; };
-
-  waypoint = waypoint_0_3_2;
-
-  waypoint_0_3_2 = build {
-    name = "waypoint";
-    version = "0.3.2";
-    packageFile = waypointPackageDirectory;
-  } { buildHashiCorpPackage = util.buildHashiCorpPackage; };
+  waypoint = waypoint-0-4-0;
+  waypoint-0-4-0 = util.init {
+    tool = "waypoint";
+    version = "0.4.0";
+  };
 }

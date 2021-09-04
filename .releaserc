@@ -1,14 +1,14 @@
 {
-  branches: [
+  "branches": [
     "master", 
     "next", 
-    { name: "alpha", prerelease: true }
+    { "name": "alpha", "prerelease": true }
   ],
-  plugins: [
+  "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator", 
     ["@semantic-release/changelog", {
-      "changelogFile": "CHANGELOG.md",
+      "changelogFile": "CHANGELOG.md"
     }],
     ["@google/semantic-release-replace-plugin", {
       "replacements": [
@@ -24,7 +24,7 @@
       "assets": [
         "CHANGELOG.md",
         "config/settings/default.json"
-      ],
+      ]
     }],
     "@semantic-release/github"
   ]

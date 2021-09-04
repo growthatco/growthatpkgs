@@ -1,3 +1,3 @@
 rec {
-	rootDir = ./..;
+	root-dir = ./..;
 }
