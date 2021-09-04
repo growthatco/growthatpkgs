@@ -6,6 +6,28 @@ on:
       - next
 
 jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v13
+        with:
+          skip_adding_nixpkgs_channel: true
+
+      - name: Cachix
+        uses: cachix/cachix-action@v10
+        with:
+          name: gtc-growthatpkgs-rel
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+
+      - name: Download Nix Dependenices
+        run: |
+          nix-shell shell.integration.nix --pure
+
   test:
     name: Test
     runs-on: ubuntu-20.04
@@ -23,10 +45,6 @@ jobs:
         with:
           name: gtc-growthatpkgs-int
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-
-      - name: Download Nix Dependenices
-        run: |
-          nix-shell shell.integration.nix --pure
 
       # === act ===
 
@@ -47,7 +65,7 @@ jobs:
       - name: Test `clippy`
         id: test-clippy
         run: |
-          nix-shell shell.integration.nix --pure --run "clippy-driver --version"          
+          nix-shell shell.integration.nix --pure --run "clippy-driver --version"
 
       # === consul ===
 
@@ -61,7 +79,7 @@ jobs:
       - name: Test `go`
         id: test-go
         run: |
-          nix-shell shell.integration.nix --pure --run "go version"          
+          nix-shell shell.integration.nix --pure --run "go version"
 
       # === golangci-lint ===
 
