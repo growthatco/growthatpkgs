@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/growthatco/growthatpkgs/compare/v1.0.0...v1.0.1) (2021-09-05)
+
+
+### Bug Fixes
+
+* stub to force release ([3a69e81](https://github.com/growthatco/growthatpkgs/commit/3a69e81faf191a3ce78295f80e2d643a92b9369e))
+
 # 1.0.0 (2021-09-05)
 
 
