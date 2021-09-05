@@ -1,0 +1,28 @@
+name: Deployment
+on:
+  push:
+    branches:
+      - main
+      - alpha
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v13
+
+      - name: Install Node.js dependencies
+        run: |
+          nix-shell shell.cd.nix --run "npm ci" 
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          nix-shell shell.cd.nix --run "npm run release" 
