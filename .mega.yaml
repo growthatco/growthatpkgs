@@ -14,7 +14,7 @@ PLUGINS:
   - https://raw.githubusercontent.com/growthatco/mega-linter-plugins/main/plugins/mega-linter-plugin-nixfmt/nixfmt.megalinter-descriptor.yml
 
 DEFAULT_BRANCH: main
-FILEIO_REPORTER: true
+FILEIO_REPORTER: false
 FLAVOR_SUGGESTIONS: false
 IGNORE_GENERATED_FILES: true
 IGNORE_GITIGNORED_FILES: true
