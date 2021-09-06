@@ -37,7 +37,8 @@ testem.log
 Thumbs.db
 
 # Linters
-.jscpd.json
-.prettierignore
-.prettierrc.yaml
-.yamllint.yaml
+/.cspell.json
+/.jscpd.json
+/.prettierignore
+/.prettierrc.yaml
+/.yamllint.yaml
