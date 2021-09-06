@@ -14,7 +14,6 @@ PLUGINS:
   - https://raw.githubusercontent.com/growthatco/mega-linter-plugins/main/plugins/mega-linter-plugin-nixfmt/nixfmt.megalinter-descriptor.yml
 
 DEFAULT_BRANCH: main
-FILEIO_REPORTER: false
 FLAVOR_SUGGESTIONS: false
 IGNORE_GENERATED_FILES: true
 IGNORE_GITIGNORED_FILES: true
@@ -35,3 +34,15 @@ BASH_SHFMT_FILE_EXTENSIONS:
 EXCLUDED_DIRECTORIES:
   - .git
   - modules
+
+# Reporters
+# See all available variables at https://nvuillam.github.io/mega-linter/reporters/
+CONFIG_REPORTER: true
+EMAIL_REPORTER: false
+FILEIO_REPORTER: false
+GITHUB_COMMENT_REPORTER: false
+GITHUB_STATUS_REPORTER: false
+JSON_REPORTER: false
+TAP_REPORTER: false
+TEXT_REPORTER: true
+UPDATED_SOURCES_REPORTER: false

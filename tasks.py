@@ -40,6 +40,10 @@ def env(context):
 
 @task()
 def clean(context):
+    """
+    Remove build artifacts, downloaded dependencies,
+    and generated files
+    """
     context.run(f"python ./scripts/clean.py {rootdir}")
 
 
