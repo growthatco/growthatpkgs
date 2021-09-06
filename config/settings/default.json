@@ -1,10 +1,10 @@
 {
 	"project": {
-    "owner": "GrowThat Digital Agency, LLC.",
+		"owner": "GrowThat Digital Agency, LLC.",
 		"name": "growthatpkgs",
-    "organization": "growthatco",
-    "repository": "https://github.com/growthatco/growthatpkgs",
-    "version": "1.0.2",
-    "nixpkgs_channel": "nixos-21.05"
+		"organization": "growthatco",
+		"repository": "https://github.com/growthatco/growthatpkgs",
+		"version": "1.0.2",
+		"nixpkgs_channel": "nixos-21.05"
 	}
 }

@@ -1,5 +1,5 @@
 {
-  "workbench.colorCustomizations": {
+	"workbench.colorCustomizations": {
 		"activityBar.background": "#3399ff",
 		"activityBar.activeBackground": "#3399ff",
 		"activityBar.activeBorder": "#bf0060",
@@ -15,6 +15,6 @@
 		"statusBarItem.hoverBackground": "#3399ff",
 		"statusBar.foreground": "#e7e7e7"
 	},
-  "peacock.remoteColor": "#007fff",
-	"python.formatting.provider": "black",
+	"peacock.remoteColor": "#007fff",
+	"python.formatting.provider": "black"
 }

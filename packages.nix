@@ -1,5 +1,4 @@
-{ derivations ? import ./derivations { }, sources ? import ./nix { }
-, util ? import ./util { } }:
+{ derivations ? import ./derivations { }, sources ? import ./nix { }, util ? import ./util { } }:
 
 let
   nixpkgs-unstable = util.nixpkgs-dir { version = "unstable"; };
@@ -7,8 +6,11 @@ let
   nixpkgs-20-09 = util.nixpkgs-dir { version = "20.09"; };
 in rec {
   act = act-0-2-23;
-  act-0-2-23 = util.init { tool = "act"; version = "0.2.23"; };
-  
+  act-0-2-23 = util.init {
+    tool = "act";
+    version = "0.2.23";
+  };
+
   bazel = bazel-4-1-0;
   bazel-4-1-0 = util.init {
     tool = "bazel";
@@ -67,6 +69,12 @@ in rec {
     version = "0.24.10";
   };
 
+  nixfmt = nixfmt-0-4-0;
+  nixfmt-0-4-0 = util.init {
+    tool = "nixfmt";
+    version = "0.4.0";
+  };
+
   nodejs = nodejs-16-4-0;
   nodejs-16-4-0 = util.init {
     tool = "nodejs";
@@ -106,7 +114,16 @@ in rec {
   };
 
   rustfmt = rustfmt-1-52-1;
-  rustfmt-1-52-1 = util.init { tool = "rustfmt"; version = "1.52.1"; };
+  rustfmt-1-52-1 = util.init {
+    tool = "rustfmt";
+    version = "1.52.1";
+  };
+
+  shfmt = shfmt-3-3-0;
+  shfmt-3-3-0 = util.init {
+    tool = "shfmt";
+    version = "3.3.0";
+  };
 
   skaffold = skaffold-1-20-0;
   skaffold-1-20-0 = util.init {
@@ -118,5 +135,11 @@ in rec {
   waypoint-0-4-0 = util.init {
     tool = "waypoint";
     version = "0.4.0";
+  };
+
+  yamllint = yamllint-1-26-1;
+  yamllint-1-26-1 = util.init {
+    tool = "yamllint";
+    version = "1.26.1";
   };
 }

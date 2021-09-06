@@ -19,14 +19,17 @@ in nixpkgs.mkShell rec {
     growthatpkgs.helm
     growthatpkgs.jq
     growthatpkgs.k9s
+    growthatpkgs.nixfmt
     growthatpkgs.nodejs
     growthatpkgs.nomad
     growthatpkgs.openjdk
     growthatpkgs.python
     growthatpkgs.rust
     growthatpkgs.rustfmt
+    growthatpkgs.shfmt
     growthatpkgs.skaffold
     growthatpkgs.waypoint
+    growthatpkgs.yamllint
   ];
   shellHook = "unset GOPATH";
 }

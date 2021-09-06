@@ -5,4 +5,4 @@ let
     ref = "refs/heads/nixpkgs-unstable";
     rev = "860b56be91fb874d48e23a950815969a7b832fbc";
   }) { };
-in pkgs.python39
+in pkgs.nixfmt
