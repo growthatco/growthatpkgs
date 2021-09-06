@@ -39,7 +39,7 @@ def json2env(jsonstr: str, _key="", _nested=False):
             object, append the current key with a trailing underscore
             and call `json2env` recursively.
             """
-            key = f'{_key}{k}_'
+            key = f"{_key}{k}_"
             json2env(json.dumps(v), key, True)
 
         else:
@@ -47,7 +47,7 @@ def json2env(jsonstr: str, _key="", _nested=False):
             If the value is not a json object, create the environment
             variable entry, and print.
             """
-            env = f'{_key}{k}={v}'
+            env = f"{_key}{k}={v}"
 
             """
             Add the current entry to the global `_env` array, we'll deconstruct
@@ -77,7 +77,7 @@ https://asdf-vm.com/#/core-configuration?id=tool-versions
 
 
 def toolversions2env(tvstr: str):
-    tvstr = re.sub(r'-', "_", tvstr)
-    tvstr = re.sub(r' ', "_VERSION=", tvstr)
+    tvstr = re.sub(r"-", "_", tvstr)
+    tvstr = re.sub(r" ", "_VERSION=", tvstr)
     tvstr = tvstr.upper()
     return tvstr

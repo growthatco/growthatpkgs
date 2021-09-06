@@ -4,10 +4,9 @@ project:
   organization: growthatco
   owner: GrowThat Digital Agency, LLC.
   repository: https://github.com/growthatco/growthatpkgs
-  version: 0.0.0
+  version: 1.0.2
 stage: development
 tools:
-  jq: '1.6'
   nix: 2.3.14
-  nodejs: 12.18.3
-  python: 3.7.9
+  nodejs: 16.4.0
+  python: 3.9.4

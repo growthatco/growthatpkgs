@@ -1,8 +1,7 @@
-import dotenv, json, jsonmerge, os, platform, subprocess, sys, yaml
+import json, jsonmerge, os, sys, yaml
 
 from lib import env as xenv
 from lib import file as xfile
-from lib import strings as xstrings
 
 
 # The full path of the project's root directory
@@ -28,7 +27,7 @@ stage_settings_path = os.path.join(settingsdir, "{}.json".format(stage))
 stage_settings_str = xfile.get(stage_settings_path)
 stage_settings_json = json.loads(stage_settings_str)
 
-tools_path = os.path.join(rootdir, ".toolsrc")
+tools_path = os.path.join(rootdir, ".tools.json")
 tools_str = xfile.get(tools_path)
 tools_json = json.loads(tools_str)
 
@@ -43,7 +42,7 @@ xfile.overwrite(".env.json", combined_json_str)
 combined_yaml = yaml.load(combined_json_str, Loader=yaml.SafeLoader)
 combined_yaml_str = yaml.dump(combined_yaml)
 xfile.overwrite(".env.yaml", combined_yaml_str)
-xfile.overwrite("invoke.yaml", combined_yaml_str)
+xfile.overwrite(".invoke.yaml", combined_yaml_str)
 
 # Create the following dotenv files:
 # - .env

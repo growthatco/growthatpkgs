@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Node.js dependencies
         run: |
-          nix-shell shell.cd.nix --run "npm ci" 
+          nix-shell shell.cd.nix --run "npm ci"
 
       - name: Release
         env:
@@ -31,4 +31,4 @@ jobs:
           GIT_COMMITTER_NAME: ${{ secrets.GROWTHAT_BOT_NAME }}
           GIT_COMMITTER_EMAIL: ${{ secrets.GROWTHAT_BOT_EMAIL }}
         run: |
-          nix-shell shell.cd.nix --run "npm run release" 
+          nix-shell shell.cd.nix --run "npm run release"

@@ -1,4 +1,4 @@
-import fnmatch, os
+import fnmatch, os, re
 
 
 def get(path):
@@ -35,13 +35,32 @@ def find(name, path):
     return result
 
 
-def find_by_pattern(pattern, path):
+def find_by_pattern(includes, path, excludes=[]):
     """
-    Find all files that match the provided regex `pattern` in a
-    given `path`."""
+    Find all files that match the provided regex patterns in a
+    given `path`.
+
+    https://stackoverflow.com/a/5141829
+    """
+
+    # Transform glob patterns to regular expressions
+    includes = r"|".join([fnmatch.translate(x) for x in includes])
+    excludes = r"|".join([fnmatch.translate(x) for x in excludes]) or r"$."
+
     result = []
+
     for root, dirs, files in os.walk(path):
+
+        # Exclude ignored directories
+        dirs[:] = [d for d in dirs if not re.match(excludes, d)]
+
+        # Exclude ignored files
+        files = [f for f in files if not re.match(excludes, f)]
+
+        # Include matching files
+        files = [f for f in files if re.match(includes, f)]
+
         for name in files:
-            if fnmatch.fnmatch(name, pattern):
-                result.append(os.path.join(root, name))
+            result.append(os.path.join(root, name))
+
     return result

@@ -1,0 +1,36 @@
+# Configuration file for Mega-Linter
+# See all available variables at https://nvuillam.github.io/mega-linter/configuration/ and in linters documentation
+
+ENABLE_LINTERS:
+  - BASH_SHELLCHECK
+  - BASH_SHFMT
+  - JSON_PRETTIER
+  - NIX_NIXFMT
+  - PYTHON_BLACK
+  - YAML_PRETTIER
+  - YAML_YAMLLINT
+
+PLUGINS:
+  - https://raw.githubusercontent.com/growthatco/mega-linter-plugins/main/plugins/mega-linter-plugin-nixfmt/nixfmt.megalinter-descriptor.yml
+
+DEFAULT_BRANCH: main
+FILEIO_REPORTER: true
+IGNORE_GITIGNORED_FILES: true
+PRINT_ALPACA: false
+VALIDATE_ALL_CODEBASE: true
+FLAVOR_SUGGESTIONS: false
+SHOW_SKIPPED_LINTERS: false
+SHOW_ELAPSED_TIME: true
+
+BASH_SHELLCHECK_FILE_EXTENSIONS:
+  - .bash
+  - .sh
+
+BASH_SHFMT_FILE_EXTENSIONS:
+  - .bash
+  - .envrc
+  - .sh
+
+EXCLUDED_DIRECTORIES:
+  - .git
+  - modules

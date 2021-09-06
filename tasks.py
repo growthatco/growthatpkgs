@@ -1,8 +1,10 @@
 import dotenv, os, pathlib, platform, subprocess
 
-from invoke import Collection, task
+from invoke import task
+from invoke.collection import Collection
+from invoke.config import Config
 
-from scripts.lib import strings as xstrings
+from scripts.lib import string as xstring
 
 # Get the current working directory for the root of the project.
 rootdir = pathlib.Path.cwd()
@@ -26,7 +28,7 @@ def env(context):
     os.environ["PROJECT_STAGE"] = context.stage
 
     # Set the project commit hash.
-    os.environ["PROJECT_COMMIT"] = xstrings.normalize(
+    os.environ["PROJECT_COMMIT"] = xstring.normalize(
         subprocess.check_output(["git", "rev-parse", "HEAD"])
     )
 
@@ -41,7 +43,12 @@ def clean(context):
     context.run(f"python ./scripts/clean.py {rootdir}")
 
 
-@task(post=[env])
+@task()
+def linters(context):
+    context.run(f"python ./scripts/linters.py {rootdir}")
+
+
+@task(post=[env, linters])
 def setup(context):
     context.run(f"python ./scripts/setup.py {rootdir} {context.stage}")
 
@@ -108,8 +115,29 @@ update.add_task(update_niv)
 update.add_task(update_npm)
 update.add_task(update_requirements)
 
+# === LINT ===
+
+
+@task(pre=[setup])
+def lint(context, format=False):
+    """
+    Run all `mega-linter` formatters
+    """
+    context.run(f"npm run lint -- --fix={str(format).lower()}")
+
+
 #
 
-ns = Collection()
+config = Config()
+config.set_runtime_path(os.path.join(rootdir, ".invoke.yaml"))
+config.load_runtime()
 
+ns = Collection()
+ns.configure(config)
+
+
+# Collections
 ns.add_collection(update)
+
+# Tasks
+ns.add_task(lint)
