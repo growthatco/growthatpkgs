@@ -44,7 +44,7 @@ def clean(context):
     Remove build artifacts, downloaded dependencies,
     and generated files
     """
-    context.run(f"python ./scripts/clean.py {rootdir}")
+    context.run(f"git clean -Xdf")
 
 
 @task()
