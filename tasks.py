@@ -29,7 +29,7 @@ def env(context):
 
     # Set the project commit hash.
     os.environ["PROJECT_COMMIT"] = xstring.normalize(
-        subprocess.check_output(["git", "rev-parse", "HEAD"])
+        subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
     )
 
     # Set the current operating system & CPU architecture of the current
@@ -124,6 +124,10 @@ def lint(context, format=False):
     Run all `mega-linter` formatters
     """
     context.run(f"npm run lint -- --fix={str(format).lower()}")
+    # Detached head state in git after running MegaLinter
+    # https://github.com/nvuillam/mega-linter/issues/604
+    commit = os.environ["PROJECT_COMMIT"]
+    context.run(f"git checkout -m {commit}")
 
 
 #
