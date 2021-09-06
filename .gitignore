@@ -37,6 +37,7 @@ testem.log
 /typings
 .env
 .env.*
+**/__pycache__
 
 # System Files
 .DS_Store
