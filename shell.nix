@@ -10,11 +10,8 @@ in nixpkgs.mkShell rec {
   buildInputs = [
     # <growthatpkgs>
     growthatpkgs.act
-    growthatpkgs.nixfmt
     growthatpkgs.nodejs
     growthatpkgs.python
-    growthatpkgs.shfmt
-    growthatpkgs.yamllint
   ];
   shellHook = "unset PYTHONPATH";
 }
