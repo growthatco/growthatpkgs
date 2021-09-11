@@ -20,9 +20,27 @@ jobs:
         with:
           github_token: ${{ secrets.GROWTHAT_BOT_TOKEN }}
 
+  setup_nix:
+    name: Setup Nix Tools
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GROWTHAT_BOT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v13
+
+      - name: Build Nix Tools
+        run: |
+          nix-shell shell.ci.nix
+
   test:
     name: Test
     runs-on: ubuntu-20.04
+    needs: setup_nix
     steps:
       - name: Checkout
         uses: actions/checkout@v2
