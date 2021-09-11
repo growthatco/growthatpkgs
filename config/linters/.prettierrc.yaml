@@ -8,3 +8,10 @@ singleQuote: false
 tabWidth: 2
 trailingComma: "all"
 useTabs: true
+
+overrides:
+  - files:
+      - "*.yaml"
+      - "*.yml"
+    options:
+      printWidth: 9999
