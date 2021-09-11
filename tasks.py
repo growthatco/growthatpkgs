@@ -23,12 +23,12 @@ ns.configure(config)
 
 
 @task(name="refresh")
-def _setup(context):
+def _pre(context):
     generate_all(context)
     context.run(f"python ./scripts/setup.py {rootdir} {context.stage}")
 
 
-ns.add_task(_setup)
+ns.add_task(_pre)
 
 # ===================
 # === Collections ===
@@ -91,7 +91,7 @@ ns.add_collection(generate)
 # === Update ===
 
 
-@task(pre=[_setup], default=True, name="all")
+@task(pre=[_pre], default=True, name="all")
 def update_all(context):
     """
     Run all `update` tasks
@@ -102,7 +102,7 @@ def update_all(context):
     update_requirements(context)
 
 
-@task(pre=[_setup], name="modules")
+@task(pre=[_pre], name="modules")
 def update_modules(context):
     """
     Update git sub-modules
@@ -110,7 +110,7 @@ def update_modules(context):
     context.run("git submodule update --init --recursive --remote")
 
 
-@task(pre=[_setup], name="niv")
+@task(pre=[_pre], name="niv")
 def update_niv(context):
     """
     Update niv dependencies
@@ -118,7 +118,7 @@ def update_niv(context):
     context.run("niv update niv; niv update nixpkgs")
 
 
-@task(pre=[_setup], name="npm")
+@task(pre=[_pre], name="npm")
 def update_npm(context):
     """
     Update npm packages
@@ -126,7 +126,7 @@ def update_npm(context):
     context.run("npm run update")
 
 
-@task(pre=[_setup], name="requirements")
+@task(pre=[_pre], name="requirements")
 def update_requirements(context):
     """
     Update python packages
@@ -169,7 +169,7 @@ ns.add_task(clean)
 # === Init ===
 
 
-@task(pre=[_setup])
+@task(pre=[_pre])
 def init(context):
     """
     Initialize build dependencies
@@ -185,7 +185,7 @@ ns.add_task(init)
 # === Lint ===
 
 
-@task(pre=[_setup])
+@task(pre=[_pre])
 def lint(context, format=False):
     """
     Run all `mega-linter` formatters
