@@ -22,11 +22,13 @@ ns = Collection()
 ns.configure(config)
 
 
-@task()
+@task(name="refresh")
 def _setup(context):
     generate_all(context)
     context.run(f"python ./scripts/setup.py {rootdir} {context.stage}")
 
+
+ns.add_task(_setup)
 
 # ===================
 # === Collections ===
@@ -113,7 +115,7 @@ def update_niv(context):
     """
     Update niv dependencies
     """
-    context.run("niv update")
+    context.run("niv update niv; niv update nixpkgs")
 
 
 @task(pre=[_setup], name="npm")

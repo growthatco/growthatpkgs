@@ -12,10 +12,8 @@ rootdir = sys.argv[1]
 stage = sys.argv[2]
 
 
-# Frequently accessed directories
-configdir = os.path.join(rootdir, "config")
-settingsdir = os.path.join(configdir, "settings")
-targetdir = os.path.join(rootdir, "target")
+# Settings directory
+settingsdir = os.path.join(rootdir, "config", "settings")
 
 # Combine the default, project stage, and tool version settings
 # into a global configuation file: .env.json.

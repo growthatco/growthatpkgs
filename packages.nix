@@ -1,9 +1,7 @@
 { sources ? import ./nix { } }:
 
 let
-  inherit (sources) 860b56be91fb874d48e23a950815969a7b832fbc;
-
-  n860b5 = 860b56be91fb874d48e23a950815969a7b832fbc;
+  inherit (sources) n860b5;
 in rec {
   act = act-0-2-23;
   act-0-2-23 = n860b5.act;
