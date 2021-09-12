@@ -2,7 +2,7 @@
 	"name": "growthatpkgs",
 	"private": false,
 	"scripts": {
-		"lint": "mega-linter-runner --env MEGALINTER_CONFIG=.mega.yaml",
+		"lint": "mega-linter-runner",
 		"prepare": "husky install",
 		"release": "semantic-release --ci --extends ./.release.json",
 		"update": "run-s \"update:*\"",

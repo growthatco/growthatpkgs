@@ -180,7 +180,6 @@ jobs:
           APPLY_FIXES_EVENT: pull_request
           APPLY_FIXES_MODE: commit
           GITHUB_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN }}
-          MEGALINTER_CONFIG: "./.mega.yaml"
 
       # Upload Mega-Linter artifacts
       - name: Archive production artifacts
