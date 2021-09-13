@@ -12,7 +12,7 @@ useTabs: true
 
 overrides:
   - files:
-    - "*.json"
+      - "*.json"
     options:
       useTabs: false
   - files:
