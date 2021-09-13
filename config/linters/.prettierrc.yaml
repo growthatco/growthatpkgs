@@ -12,6 +12,10 @@ useTabs: true
 
 overrides:
   - files:
+    - "*.json"
+    options:
+      useTabs: false
+  - files:
       - "*.yaml"
       - "*.yml"
     options:
