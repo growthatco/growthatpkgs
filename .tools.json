@@ -1,11 +1,11 @@
 {
-	"tools": {
-		"nix": "2.3.14",
-		"nixfmt": {
-			"version": "0.4.0",
-			"path": "/nix/store/jmf205gcajlva1hh5cfw9pfn1bagv4r7-nixfmt-0.4.0/bin/nixfmt"
-		},
-		"nodejs": "16.4.0",
-		"python": "3.9.4"
-	}
+  "tools": {
+    "nix": "2.3.14",
+    "nixfmt": {
+      "version": "0.4.0",
+      "path": "/nix/store/jmf205gcajlva1hh5cfw9pfn1bagv4r7-nixfmt-0.4.0/bin/nixfmt"
+    },
+    "nodejs": "16.4.0",
+    "python": "3.9.4"
+  }
 }
