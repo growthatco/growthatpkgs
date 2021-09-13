@@ -24,7 +24,6 @@ ns.configure(config)
 
 @task(name="refresh")
 def _pre(context):
-    generate_all(context)
     # Set the current project stage
     os.environ["PROJECT_STAGE"] = context.stage
 
@@ -173,6 +172,7 @@ def init(context):
     update_modules(context)
     update_niv(context)
     context.run("npm install")
+    generate_all(context)
 
 
 ns.add_task(init)
