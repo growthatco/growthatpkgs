@@ -7,6 +7,7 @@ on:
       - next
 
 env:
+  APPLY_FIXES: all
   APPLY_FIXES_EVENT: pull_request
   APPLY_FIXES_MODE: commit
 
@@ -161,8 +162,8 @@ jobs:
   build:
     name: Mega-Linter
     runs-on: ubuntu-20.04
+    needs: setup
     steps:
-      # Git Checkout
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
