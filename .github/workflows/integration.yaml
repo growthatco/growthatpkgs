@@ -1,3 +1,4 @@
+---
 name: Integration
 on:
   pull_request:
@@ -11,28 +12,28 @@ env:
   APPLY_FIXES_MODE: commit
 
 jobs:
-  # Cancel duplicate jobs: https://github.com/fkirc/skip-duplicate-actions#option-3-cancellation-only
-  cancel_duplicates:
-    name: Cancel duplicate jobs
+  setup:
+    name: Setup
     runs-on: ubuntu-20.04
     steps:
-      - uses: fkirc/skip-duplicate-actions@master
+      - name: Cancel Duplicate Jobs
+        uses: fkirc/skip-duplicate-actions@v3.4.1
         with:
           github_token: ${{ secrets.GROWTHAT_BOT_TOKEN }}
 
   test:
     name: Test
     runs-on: ubuntu-20.04
+    needs: setup
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GROWTHAT_BOT_TOKEN }}
+          fetch-depth: 0
 
       - name: Install Nix
         uses: cachix/install-nix-action@v13
-
-      - name: Build Nix Tools
-        run: |
-          nix-shell shell.ci.nix --pure
 
       # === act ===
 
@@ -161,8 +162,8 @@ jobs:
   build:
     name: Mega-Linter
     runs-on: ubuntu-20.04
+    needs: setup
     steps:
-      # Git Checkout
       - name: Checkout Code
         uses: actions/checkout@v2
         with:
@@ -178,10 +179,9 @@ jobs:
         env:
           # All available variables are described in documentation
           # https://nvuillam.github.io/mega-linter/configuration/
-          VALIDATE_ALL_CODEBASE: ${{ github.event_name == &#39;push&#39; &amp;&amp; github.ref ==
-            &#39;refs/heads/master&#39; }} # Validates all source when push on master, else just the git diff with master. Set &#39;true&#39; if you always want to lint all sources
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # ADD YOUR CUSTOM ENV VARIABLES HERE TO OVERRIDE VALUES OF .mega.yaml AT THE ROOT OF YOUR REPOSITORY
+          APPLY_FIXES_EVENT: pull_request
+          APPLY_FIXES_MODE: commit
+          GITHUB_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN }}
 
       # Upload Mega-Linter artifacts
       - name: Archive production artifacts
@@ -196,43 +196,26 @@ jobs:
       # Create pull request if applicable (for now works only on PR from same repository, not from forks)
       - name: Create Pull Request with applied fixes
         id: cpr
-        if:
-          steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' ||
-          env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' &&
-          (github.event_name == 'push' || github.event.pull_request.head.repo.full_name ==
-          github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GROWTHAT_BOT_TOKEN }}
           commit-message: "[Mega-Linter] Apply linters automatic fixes"
           title: "[Mega-Linter] Apply linters automatic fixes"
           labels: bot
+
       - name: Create PR output
-        if:
-          steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' ||
-          env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' &&
-          (github.event_name == 'push' || github.event.pull_request.head.repo.full_name ==
-          github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
         run: |
           echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
 
       # Push new commit if applicable (for now works only on PR from same repository, not from forks)
       - name: Prepare commit
-        if:
-          steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' ||
-          env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' &&
-          github.ref != 'refs/heads/master' && (github.event_name == 'push' ||
-          github.event.pull_request.head.repo.full_name == github.repository) &&
-          !contains(github.event.head_commit.message, 'skip fix')
+        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/master' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
         run: sudo chown -Rc $UID .git/
       - name: Commit and push applied linter fixes
-        if:
-          steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' ||
-          env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' &&
-          github.ref != 'refs/heads/master' && (github.event_name == 'push' ||
-          github.event.pull_request.head.repo.full_name == github.repository) &&
-          !contains(github.event.head_commit.message, 'skip fix')
+        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/master' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}

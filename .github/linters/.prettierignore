@@ -8,6 +8,7 @@
 
 # Dependencies
 /node_modules
+/modules
 
 # IDEs and editors
 /.idea
@@ -17,6 +18,13 @@
 *.launch
 .settings/
 *.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # Development Artifacts
 /.direnv
@@ -30,17 +38,7 @@ testem.log
 /typings
 .env
 .env.*
-**/__pycache__
 
 # System Files
 .DS_Store
 Thumbs.db
-
-# Linters
-/.cspell.json
-/.jscpd.json
-/.prettierignore
-/.prettierrc.yaml
-/.secretlintignore
-/.secretlintrc.json
-/.yamllint.yaml

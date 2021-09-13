@@ -1,5 +1,4 @@
-import json
-import re
+import json, re
 
 _env = []
 
@@ -58,7 +57,7 @@ def json2env(jsonstr: str, _key="", _nested=False):
         if _nested == False and incr == len(val.items()):
             """
             Because this is a synchronous call stack, we can check that
-            are finished wih the iteration by using the `_nested` flag. If we
+            are finished with the iteration by using the `_nested` flag. If we
             aren't iterating over a nested object, and we're at the last
             position of the initial iteration, return the environment variable
             entries separated by newlines.

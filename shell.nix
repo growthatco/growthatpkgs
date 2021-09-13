@@ -10,6 +10,7 @@ in nixpkgs.mkShell rec {
   buildInputs = [
     # <growthatpkgs>
     growthatpkgs.act
+    growthatpkgs.nixfmt
     growthatpkgs.nodejs
     growthatpkgs.python
   ];
