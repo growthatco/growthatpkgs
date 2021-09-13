@@ -1,3 +1,6 @@
+direnv:
+  log:
+    format: ''
 project:
   name: growthatpkgs
   nixpkgs_channel: nixos-21.05

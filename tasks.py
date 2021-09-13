@@ -25,7 +25,18 @@ ns.configure(config)
 @task(name="refresh")
 def _pre(context):
     generate_all(context)
-    context.run(f"python ./scripts/setup.py {rootdir} {context.stage}")
+    # Set the current project stage
+    os.environ["PROJECT_STAGE"] = context.stage
+
+    # Set the project commit hash.
+    os.environ["PROJECT_COMMIT"] = xstring.normalize(
+        subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
+    )
+
+    # Set the current operating system & CPU architecture of the current
+    # development environment
+    os.environ["PROJECT_SYSTEM"] = platform.system().lower()
+    os.environ["PROJECT_ARCH"] = platform.machine().lower()
 
 
 ns.add_task(_pre)
@@ -42,47 +53,30 @@ def generate_all(context):
     """
     Trigger all generators
     """
-    generate_env(context)
+    generate_config(context)
     generate_linters(context)
 
 
-@task(name="env")
-def generate_env(context):
+@task(name="config")
+def generate_config(context):
     """
-    Initialize the all environment variables for the `invoke`
-    scope.
+    Generate all root level config files.
     """
-    # Instantiate the environment variables in `.env`
-    # and `.tool-versions.env` via `dotenv`.
-    dotenv.load_dotenv(".env")
-    dotenv.load_dotenv(".tool-versions.env")
-
-    # Set the current project stage
-    os.environ["PROJECT_STAGE"] = context.stage
-
-    # Set the project commit hash.
-    os.environ["PROJECT_COMMIT"] = xstring.normalize(
-        subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"])
-    )
-
-    # Set the current operating system & CPU architecture of the current
-    # developmentenvironment
-    os.environ["PROJECT_SYSTEM"] = platform.system().lower()
-    os.environ["PROJECT_ARCH"] = platform.machine().lower()
+    context.run(f"python ./scripts/config.py {rootdir} {context.stage}")
 
 
 @task(name="linters")
 def generate_linters(context):
     """
     Copy the linters found in the `./linters` directory to the `root`,
-    and `./.github/linters` directories
+    and `./.github/linters` directories.
     """
     context.run(f"python ./scripts/linters.py {rootdir}")
 
 
 generate = Collection("generate", generate_all)
 
-generate.add_task(generate_env)
+generate.add_task(generate_config)
 generate.add_task(generate_linters)
 
 ns.add_collection(generate)
@@ -158,9 +152,11 @@ ns.add_collection(update)
 def clean(context):
     """
     Remove build artifacts, downloaded dependencies,
-    and generated files
+    and generated files.
     """
-    context.run(f"git clean -Xdf")
+    context.run("git clean -Xdf")
+    context.run("rm -rf ./.github/linters/*")
+    context.run("rm -rf ./modules/*")
 
 
 ns.add_task(clean)
