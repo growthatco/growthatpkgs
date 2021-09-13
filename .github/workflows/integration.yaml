@@ -35,6 +35,10 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v13
 
+      - name: Build Nix Dependencies
+        run: |
+          nix-shell shell.ci.nix
+
       # === act ===
 
       - name: Test `act`
@@ -173,8 +177,11 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v13
 
+      - name: Build Nix Dependencies
+        run: |
+          nix-shell shell.ci.nix
+
       - name: Run `commitlint`
-        id: test-act
         run: |
           nix-shell shell.ci.nix --pure --run "npx commitlint --verbose --from origin/${{ github.base_ref }} --to ${{ github.head_ref }}"
 
