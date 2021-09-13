@@ -1,4 +1,1 @@
-{ sources ? import ./nix { } }:
-rec {
-	inherit (sources) n860b5;
-}
+{ sources ? import ./nix { } }: rec { inherit (sources) n860b5; }

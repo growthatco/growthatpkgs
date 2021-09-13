@@ -1,15 +1,18 @@
 {
 	"threshold": 0,
 	"reporters": ["html", "markdown"],
+	"gitignore": true,
 	"ignore": [
 		"**/node_modules/**",
 		"**/.git/**",
 		"**/.rbenv/**",
 		"**/.venv'/**",
+		"**/.direnv/**",
 		"**/*cache*/**",
 		"**/.github/**",
 		"**/.idea/**",
 		"**/report/**",
-		"**/*.svg"
+		"**/*.svg",
+		"modules"
 	]
 }

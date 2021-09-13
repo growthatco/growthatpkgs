@@ -1,9 +1,11 @@
-import dotenv, os, pathlib, platform, subprocess
+import os, pathlib, platform, subprocess
 
 from invoke import task
 from invoke.collection import Collection
 from invoke.config import Config
 
+from scripts import config
+from scripts import linters
 from scripts.lib import string as xstring
 
 # Get the current working directory for the root of the project.
@@ -13,9 +15,13 @@ rootdir = pathlib.Path.cwd()
 # === Config ===
 # ==============
 
+cfg = os.path.join(rootdir, ".env.yaml")
+
+if not os.path.isfile(cfg):
+    config.generate_config(rootdir)
 
 config = Config()
-config.set_runtime_path(os.path.join(rootdir, ".invoke.yaml"))
+config.set_runtime_path(cfg)
 config.load_runtime()
 
 ns = Collection()
@@ -57,11 +63,11 @@ def generate_all(context):
 
 
 @task(name="config")
-def generate_config(context):
+def generate_config(context, stage="development"):
     """
     Generate all root level config files.
     """
-    context.run(f"python ./scripts/config.py {rootdir} {context.stage}")
+    config.generate_config(rootdir, context.stage or stage)
 
 
 @task(name="linters")
@@ -70,7 +76,7 @@ def generate_linters(context):
     Copy the linters found in the `./linters` directory to the `root`,
     and `./.github/linters` directories.
     """
-    context.run(f"python ./scripts/linters.py {rootdir}")
+    linters.generate_linters(rootdir)
 
 
 generate = Collection("generate", generate_all)
@@ -136,8 +142,6 @@ update.add_task(update_requirements)
 
 ns.add_collection(update)
 
-#
-
 
 # =============
 # === Tasks ===
@@ -184,13 +188,16 @@ ns.add_task(init)
 @task(pre=[_pre])
 def lint(context, format=False):
     """
-    Run all `mega-linter` formatters
+    Run all `mega-linter` linters. Apply fixes via
+    corresponding formatters via the `format` flag.
     """
+    context.run("rm -rf ./report")
     context.run(f"npm run lint -- --fix={str(format).lower()}")
     # Detached head state in git after running MegaLinter
     # https://github.com/nvuillam/mega-linter/issues/604
     commit = os.environ["PROJECT_COMMIT"]
     context.run(f"git checkout -m {commit}")
+    context.run("sudo chown -R $(whoami) ./report")
 
 
 ns.add_task(lint)

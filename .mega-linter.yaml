@@ -35,7 +35,7 @@ BASH_SHFMT_FILE_EXTENSIONS:
   - .sh
 
 EXCLUDED_DIRECTORIES:
-  - .git
+  - .direnv
   - modules
 
 # Reporters

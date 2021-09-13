@@ -1,7 +1,6 @@
 { sources ? import ./nix { }, util ? import ./util { } }:
 
-let
-  inherit (sources) nixpkgs;
+let inherit (sources) nixpkgs;
 in rec {
   act = act-0-2-23;
   act-0-2-23 = util.init {
