@@ -18,6 +18,12 @@
             "from": "\"version\": \".*\"",
             "to": "\"version\": \"${nextRelease.version}\"",
             "countMatches": true
+          },
+          {
+            "files": ["pyproject.toml"],
+            "from": "version = \".*\"",
+            "to": "version = \"${nextRelease.version}\"",
+            "countMatches": true
           }
         ]
       }

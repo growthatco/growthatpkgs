@@ -12,6 +12,7 @@ in nixpkgs.mkShell rec {
     growthatpkgs.act
     growthatpkgs.nixfmt
     growthatpkgs.nodejs
+    growthatpkgs.poetry
     growthatpkgs.python
   ];
   shellHook = "unset PYTHONPATH";

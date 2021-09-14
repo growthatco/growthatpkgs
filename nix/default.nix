@@ -6,5 +6,6 @@ in rec {
     overlays = [ overlay ];
     config = { };
   };
+  n528d3 = import sources.n528d3 { };
   n860b5 = import sources.n860b5 { };
 }

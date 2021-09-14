@@ -94,6 +94,12 @@ in rec {
     version = "16+36";
   } { };
 
+  poetry = poetry-1-1-5;
+  poetry-1-1-5 = util.init {
+    tool = "poetry";
+    version = "1.1.5";
+  } { };
+
   python = python-3-9-4;
   python-3-7-10 = util.init {
     tool = "python";
