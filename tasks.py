@@ -125,12 +125,13 @@ def update_npm(context):
     context.run("npm run update")
 
 
-@task(pre=[_pre], name="requirements")
-def update_requirements(context):
+@task(pre=[_pre], name="poetry")
+def update_poetry(context):
     """
     Update python packages
     """
-    context.run("pip install -r requirements.txt")
+    context.run("poetry update")
+    context.run("poetry install")
 
 
 update = Collection("update", update_all)
@@ -138,7 +139,7 @@ update = Collection("update", update_all)
 update.add_task(update_modules)
 update.add_task(update_niv)
 update.add_task(update_npm)
-update.add_task(update_requirements)
+update.add_task(update_poetry)
 
 ns.add_collection(update)
 
