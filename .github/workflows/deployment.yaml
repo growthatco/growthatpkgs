@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Nix Dependencies
         run: |
-          nix-shell shell.ci.nix        
+          nix-shell shell.ci.nix
 
       - name: Install Node.js dependencies
         run: |

@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Nix Dependencies
         run: |
-          nix-shell shell.cd.nix        
+          nix-shell shell.cd.nix
 
       - name: Install Node.js dependencies
         run: |
@@ -36,5 +36,4 @@ jobs:
           GIT_COMMITTER_NAME: ${{ secrets.GROWTHAT_BOT_NAME }}
           GIT_COMMITTER_EMAIL: ${{ secrets.GROWTHAT_BOT_EMAIL }}
         run: |
-          nix-shell shell.cd.nix --run "npm run release-dry-run"          
-
+          nix-shell shell.cd.nix --run "npm run release-dry-run"
