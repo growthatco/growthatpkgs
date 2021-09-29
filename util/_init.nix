@@ -5,5 +5,6 @@
 let
   inherit (sources) nixpkgs;
   path = constants.root-dir + "/pkgs/${tool}/${version}.nix";
-in if local then nixpkgs.callPackage path args else import path args
+in
+if local then nixpkgs.callPackage path args else import path args
 

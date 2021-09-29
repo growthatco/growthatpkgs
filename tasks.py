@@ -15,17 +15,17 @@ rootdir = pathlib.Path.cwd()
 # === Config ===
 # ==============
 
-cfg = os.path.join(rootdir, ".env.yaml")
+cfgpath = os.path.join(rootdir, ".env.yaml")
 
-if not os.path.isfile(cfg):
+if not os.path.isfile(cfgpath):
     config.generate_config(rootdir)
 
-config = Config()
-config.set_runtime_path(cfg)
-config.load_runtime()
+cfg = Config()
+cfg.set_runtime_path(cfgpath)
+cfg.load_runtime()
 
 ns = Collection()
-ns.configure(config)
+ns.configure(cfg)
 
 
 @task(name="refresh")
@@ -204,7 +204,9 @@ def lint(context, format=False):
     corresponding formatters via the `format` flag.
     """
     context.run("rm -rf ./report")
-    context.run(f"npm run lint -- --fix={str(format).lower()}")
+    context.run(
+        f"npm run lint -- -e 'MEGALINTER_VOLUME_ROOT={rootdir}' --fix={str(format).lower()}"
+    )
     # Detached head state in git after running MegaLinter
     # https://github.com/nvuillam/mega-linter/issues/604
     commit = os.environ["PROJECT_COMMIT"]

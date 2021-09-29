@@ -1,4 +1,6 @@
 { versions ? import ../../versions.nix { } }:
 
-let pkgs = versions.n860b5;
-in pkgs.act
+let
+  pkgs = versions.n860b5;
+in
+pkgs.act

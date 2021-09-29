@@ -1,7 +1,9 @@
 { sources ? import ./nix { }, growthatpkgs ? import ./packages.nix { } }:
 
-let inherit (sources) nixpkgs;
-in nixpkgs.mkShell rec {
+let
+  inherit (sources) nixpkgs;
+in
+nixpkgs.mkShell rec {
   name = "ci.growthatpkgs";
   env = nixpkgs.buildEnv {
     name = name;

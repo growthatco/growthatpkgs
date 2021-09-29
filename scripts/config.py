@@ -47,7 +47,5 @@ if __name__ == "__main__":
     # The current stage of the project, either: 'development', 'staging', or
     # 'production'
     stage = sys.argv[2]
-    print(rootdir)
 
-    #
-    # generate_config(rootdir, stage)
+    generate_config(rootdir, stage)

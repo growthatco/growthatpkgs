@@ -1,4 +1,4 @@
-{ sources ? import ./nix {}, growthatpkgs ? import ./packages.nix {} }:
+{ sources ? import ./nix { }, growthatpkgs ? import ./packages.nix { } }:
 
 let
   inherit (sources) nixpkgs;

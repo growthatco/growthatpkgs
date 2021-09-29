@@ -3,16 +3,17 @@
   "reporters": ["html", "markdown"],
   "gitignore": true,
   "ignore": [
+    "**/modules/**",
     "**/node_modules/**",
-    "**/.git/**",
-    "**/.rbenv/**",
-    "**/.venv'/**",
+    "**/report/**",
     "**/.direnv/**",
-    "**/*cache*/**",
+    "**/.git/**",
     "**/.github/**",
     "**/.idea/**",
-    "**/report/**",
+    "**/.rbenv/**",
+    "**/.venv'/**",
+    "**/*cache*/**",
     "**/*.svg",
-    "modules"
+    "**/.prettierrc.yaml"
   ]
 }
