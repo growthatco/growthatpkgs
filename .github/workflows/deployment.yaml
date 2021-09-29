@@ -20,6 +20,10 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v13
 
+      - name: Build Nix Dependencies
+        run: |
+          nix-shell shell.ci.nix        
+
       - name: Install Node.js dependencies
         run: |
           nix-shell shell.cd.nix --run "npm ci"
