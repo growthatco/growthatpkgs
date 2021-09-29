@@ -5,6 +5,7 @@
     "lint": "mega-linter-runner",
     "prepare": "husky install",
     "release": "semantic-release --ci --extends ./.release.json",
+    "release-dry-run": "npm run release -- --dry-run",
     "update": "run-s \"update:*\"",
     "update:upgrade": "ncu --upgrade --packageFile package.json",
     "update:install": "npm install"
