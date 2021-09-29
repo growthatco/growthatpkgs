@@ -19,7 +19,7 @@ in nixpkgs.mkShell rec {
     growthatpkgs.helm
     growthatpkgs.jq
     growthatpkgs.k9s
-    growthatpkgs.nixfmt
+    growthatpkgs.nixpkgs-fmt
     growthatpkgs.nodejs
     growthatpkgs.nomad
     growthatpkgs.openjdk

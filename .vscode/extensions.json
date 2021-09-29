@@ -1,8 +1,10 @@
 {
   "recommendations": [
-    "foxundermoon.shell-format",
-    "timonwong.shellcheck",
+    "B4dM4n.nixpkgs-fmt",
     "esbenp.prettier-vscode",
-    "ms-python.python"
+    "foxundermoon.shell-format",
+    "jnoortheen.nix-ide",
+    "ms-python.python",
+    "timonwong.shellcheck"
   ]
 }

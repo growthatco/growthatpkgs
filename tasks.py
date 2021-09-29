@@ -98,7 +98,7 @@ def update_all(context):
     update_modules(context)
     update_niv(context)
     update_npm(context)
-    update_requirements(context)
+    update_poetry(context)
 
 
 @task(pre=[_pre], name="modules")
@@ -163,7 +163,18 @@ def clean(context):
     context.run("rm -rf ./modules/*")
 
 
-ns.add_task(clean)
+# === Code ===
+
+
+@task()
+def code(context):
+    """
+    Launch Visual Studio Code.
+    """
+    context.run("code .")
+
+
+ns.add_task(code)
 
 
 # === Init ===

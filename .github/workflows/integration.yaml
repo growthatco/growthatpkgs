@@ -164,7 +164,7 @@ jobs:
           nix-shell shell.ci.nix --pure --run "waypoint version"
 
   commitlint:
-    name: commitlint
+    name: Commit-lint
     runs-on: ubuntu-20.04
     needs: setup
     steps:

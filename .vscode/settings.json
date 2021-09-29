@@ -1,4 +1,9 @@
 {
+  "nix.enableLanguageServer": true,
+  "nix.serverPath": "rnix-lsp",
+  "peacock.remoteColor": "#007fff",
+  "python.formatting.provider": "black",
+  "search.useGlobalIgnoreFiles": true,
   "workbench.colorCustomizations": {
     "activityBar.background": "#3399ff",
     "activityBar.activeBackground": "#3399ff",
@@ -15,7 +20,4 @@
     "statusBarItem.hoverBackground": "#3399ff",
     "statusBar.foreground": "#e7e7e7"
   },
-  "peacock.remoteColor": "#007fff",
-  "python.formatting.provider": "black",
-  "nixfmt.path": "${env:TOOLS_NIXFMT_PATH}"
 }

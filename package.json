@@ -2,7 +2,7 @@
   "name": "growthatpkgs",
   "private": false,
   "scripts": {
-    "lint": "mega-linter-runner",
+    "lint": "mega-linter-runner -e 'MEGALINTER_VOLUME_ROOT=/home/sam/builds/growthat/growthatpkgs'",
     "prepare": "husky install",
     "release": "semantic-release --ci --extends ./.release.json",
     "update": "run-s \"update:*\"",

@@ -66,10 +66,10 @@ in rec {
     version = "0.24.10";
   } { };
 
-  nixfmt = nixfmt-0-4-0;
-  nixfmt-0-4-0 = util.init {
-    tool = "nixfmt";
-    version = "0.4.0";
+  nixpkgs-fmt = nixpkgs-fmt-1-2-0;
+  nixpkgs-fmt-1-2-0 = util.init {
+    tool = "nixpkgs-fmt";
+    version = "1.2.0";
   } { };
 
   nodejs = nodejs-16-4-0;
