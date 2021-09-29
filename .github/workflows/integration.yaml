@@ -35,6 +35,10 @@ jobs:
       - name: Install Nix
         uses: cachix/install-nix-action@v13
 
+      - name: Build Nix Dependencies
+        run: |
+          nix-shell shell.ci.nix
+
       # === act ===
 
       - name: Test `act`
@@ -159,7 +163,29 @@ jobs:
         run: |
           nix-shell shell.ci.nix --pure --run "waypoint version"
 
-  build:
+  commitlint:
+    name: commitlint
+    runs-on: ubuntu-20.04
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GROWTHAT_BOT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v13
+
+      - name: Build Nix Dependencies
+        run: |
+          nix-shell shell.ci.nix
+
+      - name: Run `commitlint`
+        run: |
+          nix-shell shell.ci.nix --pure --run "npx commitlint --verbose --from origin/${{ github.base_ref }} --to ${{ github.head_ref }}"
+
+  mega-linter:
     name: Mega-Linter
     runs-on: ubuntu-20.04
     needs: setup
