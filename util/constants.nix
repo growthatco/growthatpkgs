@@ -1,0 +1,1 @@
+rec { root-dir = ./..; }

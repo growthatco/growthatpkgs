@@ -1,0 +1,15 @@
+{
+  "version": "0.1",
+  "language": "en",
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/vscode-extension/**",
+    "**/.direnv/**",
+    "**/.git/**",
+    ".vscode",
+    "modules",
+    "package-lock.json",
+    "report"
+  ],
+  "words": []
+}

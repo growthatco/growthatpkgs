@@ -1,0 +1,19 @@
+{
+  "threshold": 0,
+  "reporters": ["html", "markdown"],
+  "gitignore": true,
+  "ignore": [
+    "**/modules/**",
+    "**/node_modules/**",
+    "**/report/**",
+    "**/.direnv/**",
+    "**/.git/**",
+    "**/.github/**",
+    "**/.idea/**",
+    "**/.rbenv/**",
+    "**/.venv'/**",
+    "**/*cache*/**",
+    "**/*.svg",
+    "**/.prettierrc.yaml"
+  ]
+}

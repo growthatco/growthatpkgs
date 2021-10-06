@@ -1,0 +1,271 @@
+---
+name: Integration
+on:
+  pull_request:
+    branches:
+      - main
+      - next
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Cancel Duplicate Jobs
+        uses: fkirc/skip-duplicate-actions@v3.4.1
+        with:
+          github_token: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ github.token }}
+
+  test:
+    name: Test
+    runs-on: ubuntu-20.04
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v14
+
+      - name: Build Nix Dependencies
+        run: |
+          nix-shell shell.ci.nix --run "echo 'Successfully built nix dependencies.'"
+
+      # === act ===
+
+      - name: Test `act`
+        id: test-act
+        run: |
+          nix-shell shell.ci.nix --pure --run "act --version"
+
+      # === bazel ===
+
+      - name: Test `bazel`
+        id: test-bazel
+        run: |
+          nix-shell shell.ci.nix --pure --run "bazel version"
+
+      # === clippy ===
+
+      - name: Test `clippy`
+        id: test-clippy
+        run: |
+          nix-shell shell.ci.nix --pure --run "clippy-driver --version"
+
+      # === consul ===
+
+      - name: Test `consul`
+        id: test-consul
+        run: |
+          nix-shell shell.ci.nix --pure --run "consul version"
+
+      # === go ===
+
+      - name: Test `go`
+        id: test-go
+        run: |
+          nix-shell shell.ci.nix --pure --run "go version"
+
+      # === golangci-lint ===
+
+      - name: Test `golangci-lint`
+        id: test-golangci-lint
+        run: |
+          nix-shell shell.ci.nix --pure --run "golangci-lint version"
+
+      # === google-cloud-sdk ===
+
+      - name: Test `gcloud`
+        id: test-gcloud
+        run: |
+          nix-shell shell.ci.nix --pure --run "gcloud version"
+
+      # === helm ===
+
+      - name: Test `helm`
+        id: test-helm
+        run: |
+          nix-shell shell.ci.nix --pure --run "helm version"
+
+      # === jq ===
+
+      - name: Test `jq`
+        id: test-jq
+        run: |
+          nix-shell shell.ci.nix --pure --run "jq --version"
+
+      # === k9s ===
+
+      - name: Test `k9s`
+        id: test-k9s
+        run: |
+          nix-shell shell.ci.nix --pure --run "k9s version"
+
+      # === nodejs ===
+
+      - name: Test `nodejs`
+        id: test-nodejs
+        run: |
+          nix-shell shell.ci.nix --pure --run "node --version"
+
+      - name: Test `npm`
+        id: test-npm
+        run: |
+          nix-shell shell.ci.nix --pure --run "npm --version"
+
+      # === nomad ===
+
+      - name: Test `nomad`
+        id: test-nomad
+        run: |
+          nix-shell shell.ci.nix --pure --run "nomad version"
+
+      # === poetry ===
+
+      - name: Test `poetry`
+        id: test-poetry
+        run: |
+          nix-shell shell.ci.nix --pure --run "poetry --version"
+
+      # === python ===
+
+      - name: Test `python`
+        id: test-python
+        run: |
+          nix-shell shell.ci.nix --pure --run "python --version"
+
+      # === rnix-lsp ===
+
+      - name: Test `rnix-lsp`
+        id: test-rnix-lsp
+        run: |
+          nix-shell shell.ci.nix --pure --run "rnix-lsp --version"
+
+      # === rust ===
+
+      - name: Test `rust`
+        id: test-rust
+        run: |
+          nix-shell shell.ci.nix --pure --run "rustc --version"
+
+      # === rustfmt ===
+
+      - name: Test `rustfmt`
+        id: test-rustfmt
+        run: |
+          nix-shell shell.ci.nix --pure --run "rustfmt --version"
+
+      # === shfmt ===
+
+      - name: Test `shfmt`
+        id: test-shfmt
+        run: |
+          nix-shell shell.ci.nix --pure --run "shfmt --version"
+
+      # === skaffold ===
+
+      - name: Test `skaffold`
+        id: test-skaffold
+        run: |
+          nix-shell shell.ci.nix --pure --run "skaffold version"
+
+      # === waypoint ===
+
+      - name: Test `waypoint`
+        id: test-waypoint
+        run: |
+          nix-shell shell.ci.nix --pure --run "waypoint version"
+
+      # === yamllint ===
+
+      - name: Test `yamllint`
+        id: test-yamllint
+        run: |
+          nix-shell shell.ci.nix --pure --run "yamllint --version"
+
+  commitlint:
+    name: Commit Lint
+    runs-on: ubuntu-20.04
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v14
+
+      - name: Build Nix Dependencies
+        run: |
+          nix-shell shell.ci.nix --run "echo 'Successfully built nix dependencies.'"
+
+      - name: Run `commitlint`
+        run: |
+          nix-shell shell.ci.nix --pure --run "npx commitlint --verbose --from origin/${{ github.base_ref }} --to ${{ github.head_ref }}"
+
+  mega-linter:
+    name: Mega-Linter
+    runs-on: ubuntu-20.04
+    needs: setup
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ github.token }}
+          fetch-depth: 0
+
+      # Mega-Linter
+      - name: Mega-Linter
+        id: ml
+        # You can override Mega-Linter flavor used to have faster performances
+        # More info at https://nvuillam.github.io/mega-linter/flavors/
+        uses: nvuillam/mega-linter@v4.46.0
+        env:
+          # All available variables are described in documentation
+          # https://nvuillam.github.io/mega-linter/configuration/
+          APPLY_FIXES: all
+          APPLY_FIXES_EVENT: pull_request
+          APPLY_FIXES_MODE: commit
+          GITHUB_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ github.token }}
+
+      # Upload Mega-Linter artifacts
+      - name: Archive production artifacts
+        if: ${{ success() }} || ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: Mega-Linter reports
+          path: |
+            report
+            mega-linter.log
+
+      # Create pull request if applicable (for now works only on PR from same repository, not from forks)
+      - name: Create Pull Request with applied fixes
+        id: cpr
+        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ github.token }}
+          commit-message: "[Mega-Linter] Apply linters automatic fixes"
+          title: "[Mega-Linter] Apply linters automatic fixes"
+          labels: bot
+
+      - name: Create PR output
+        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+
+      # Push new commit if applicable (for now works only on PR from same repository, not from forks)
+      - name: Prepare commit
+        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/master' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        run: sudo chown -Rc $UID .git/
+
+      - name: Commit and push applied linter fixes
+        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/master' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
+          commit_message: "[Mega-Linter] Apply linters fixes"
