@@ -22,7 +22,7 @@ jobs:
     needs: setup
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
 
@@ -136,13 +136,6 @@ jobs:
         run: |
           nix-shell shell.ci.nix --pure --run "python --version"
 
-      # === rnix-lsp ===
-
-      - name: Test `rnix-lsp`
-        id: test-rnix-lsp
-        run: |
-          nix-shell shell.ci.nix --pure --run "rnix-lsp --version"
-
       # === rust ===
 
       - name: Test `rust`
@@ -191,7 +184,7 @@ jobs:
     needs: setup
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
 
@@ -212,7 +205,7 @@ jobs:
     needs: setup
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
         with:
           token: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ github.token }}
           fetch-depth: 0
@@ -229,7 +222,7 @@ jobs:
           APPLY_FIXES: all
           APPLY_FIXES_EVENT: pull_request
           APPLY_FIXES_MODE: commit
-          GITHUB_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
 
       # Upload Mega-Linter artifacts
       - name: Archive production artifacts
@@ -269,3 +262,38 @@ jobs:
         with:
           branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
           commit_message: "[Mega-Linter] Apply linters fixes"
+
+  dry-run-release:
+    name: Dry Run Release
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: 0
+          # persist-credentials: false
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v14
+
+      - name: Build Nix Dependencies
+        run: |
+          nix-shell shell.cd.nix --run "echo 'Successfully built nix dependencies.'"
+
+      - name: Install Node.js dependencies
+        run: |
+          nix-shell shell.cd.nix --run "npm ci"
+
+      - name: Release
+        env:
+          GH_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ secrets.GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: ${{ secrets.GROWTHAT_BOT_NAME }}
+          GIT_AUTHOR_EMAIL: ${{ secrets.GROWTHAT_BOT_EMAIL }}
+          GIT_COMMITTER_NAME: ${{ secrets.GROWTHAT_BOT_NAME }}
+          GIT_COMMITTER_EMAIL: ${{ secrets.GROWTHAT_BOT_EMAIL }}
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }}
+          echo ${{ github.token }}
+          echo ${{ env.GITHUB_TOKEN }}
+          nix-shell shell.cd.nix --run "npm run release-dry-run"

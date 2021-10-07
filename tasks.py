@@ -80,16 +80,15 @@ def act_pull_request(context, dryrun=False, job=None, list=False, verbose=False)
     """
     flags = [
         f"--dryrun={str(dryrun).lower()}",
-        f"--list={str(list).lower()}",
-        f"--verbose={str(verbose).lower()}",
         f"--env DEFAULT_WORKSPACE={rootdir}",
         f"--env MEGALINTER_VOLUME_ROOT={rootdir}",
+        f"--list={str(list).lower()}",
+        f"--verbose={str(verbose).lower()}",
+        f"--secret GITHUB_TOKEN={os.environ['GITHUB_TOKEN']}",
     ]
 
     if job:
-        context.run(
-            f"act pull_request --job={job} {' '.join(flags)} --insecure-secrets"
-        )
+        context.run(f"act pull_request --job={job} {' '.join(flags)} --insecure-secrets")
     else:
         context.run(f"act pull_request {' '.join(flags)}")
 
@@ -110,10 +109,11 @@ def act_push(context, dryrun=False, job=None, list=False, verbose=False):
     """
     flags = [
         f"--dryrun={str(dryrun).lower()}",
-        f"--list={str(list).lower()}",
-        f"--verbose={str(verbose).lower()}",
         f"--env DEFAULT_WORKSPACE={rootdir}",
         f"--env MEGALINTER_VOLUME_ROOT={rootdir}",
+        f"--list={str(list).lower()}",
+        f"--verbose={str(verbose).lower()}",
+        "--secret-file '.env'",
     ]
 
     if job:
@@ -186,6 +186,7 @@ def release_git_all(context):
     Run all `git` release tasks
     """
     release_git_semantic_relase_dry_run(context)
+
 
 @task(pre=[_pre], name="dry-run", aliases=["dr"])
 def release_git_semantic_relase_dry_run(context):
@@ -311,9 +312,11 @@ def lint(context, format=False):
     corresponding formatters via the `format` flag.
     """
     context.run("rm -rf ./report")
+    context.run("set +e")
     context.run(
         f"npm run lint -- -e 'MEGALINTER_VOLUME_ROOT={rootdir}' --fix={str(format).lower()}"
     )
+    context.run("set -e")
     # Detached head state in git after running MegaLinter
     # https://github.com/nvuillam/mega-linter/issues/604
     commit = os.environ["PROJECT_COMMIT"]

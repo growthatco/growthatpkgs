@@ -150,7 +150,7 @@ rec {
       tool = "rnix-lsp";
       version = "0.2.1";
     }
-    { };    
+    { };
 
   rust = rust-1-52-1;
   rust-1-52-1 = util.init
