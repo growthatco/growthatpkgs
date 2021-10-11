@@ -7,7 +7,6 @@
     "**/.direnv/**",
     "**/.git/**",
     ".vscode",
-    "modules",
     "package-lock.json",
     "report"
   ],

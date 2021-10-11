@@ -1,3 +1,4 @@
+---
 # Configuration file for Mega-Linter
 # See all available variables at https://nvuillam.github.io/mega-linter/configuration/ and in linters documentation
 
@@ -13,8 +14,8 @@ ENABLE_LINTERS:
   - YAML_PRETTIER
   - YAML_YAMLLINT
 
-PLUGINS:
-  - https://raw.githubusercontent.com/growthatco/mega-linter-plugins/main/plugins/mega-linter-plugin-nixpkgs-fmt/nixpkgs-fmt.megalinter-descriptor.yml
+# PLUGINS:
+#   - https://raw.githubusercontent.com/growthatco/mega-linter-plugins/main/plugins/mega-linter-plugin-nixpkgs-fmt/nixpkgs-fmt.megalinter-descriptor.yml
 
 DEFAULT_BRANCH: main
 FLAVOR_SUGGESTIONS: false
