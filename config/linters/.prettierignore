@@ -8,7 +8,6 @@
 
 # Dependencies
 /node_modules
-/modules
 
 # IDEs and editors
 /.idea
@@ -38,6 +37,7 @@ testem.log
 /typings
 .env
 .env.*
+**/__pycache__
 
 # System Files
 .DS_Store

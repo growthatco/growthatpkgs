@@ -19,4 +19,4 @@ overrides:
       - "*.yaml"
       - "*.yml"
     options:
-      printWidth: 500
+      printWidth: 9999

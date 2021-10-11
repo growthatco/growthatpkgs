@@ -23,21 +23,25 @@ def generate_config(rootdir, stage="development"):
     tools_json = json.loads(tools_str)
 
     settings_json = jsonmerge.merge(default_settings_json, stage_settings_json)
-    combined_json = jsonmerge.merge(settings_json, tools_json)
-    combined_json_str = json.dumps(combined_json, indent=4, sort_keys=True)
-    xfile.overwrite(".env.json", combined_json_str)
+    settings_json = jsonmerge.merge(settings_json, tools_json)
+
+    settings_json_str = json.dumps(settings_json, indent=4, sort_keys=True)
+    settings_json_path = os.path.join(rootdir, ".env.json")
+    xfile.overwrite(settings_json_path, settings_json_str)
 
     # Create the following `yaml` settings files:
     # - .env.yaml
     # - invoke.yaml
-    combined_yaml = yaml.load(combined_json_str, Loader=yaml.SafeLoader)
-    combined_yaml_str = yaml.dump(combined_yaml)
-    xfile.overwrite(".env.yaml", combined_yaml_str)
+    settings_yaml = yaml.load(settings_json_str, Loader=yaml.SafeLoader)
+    settings_yaml_str = yaml.dump(settings_yaml)
+    settings_yaml_path = os.path.join(rootdir, ".env.yaml")
+    xfile.overwrite(settings_yaml_path, settings_yaml_str)
 
     # Create the following dotenv files:
     # - .env
-    combined_env_str = xenv.json2env(combined_json_str)
-    xfile.overwrite(".env", combined_env_str)
+    settings_env_str = xenv.json2env(settings_json_str)
+    settings_env_path = os.path.join(rootdir, ".env")
+    xfile.overwrite(settings_env_path, settings_env_str.replace("-", "_"))
 
 
 if __name__ == "__main__":
