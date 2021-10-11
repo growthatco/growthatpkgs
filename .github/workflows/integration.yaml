@@ -5,6 +5,10 @@ on:
     branches:
       - main
       - next
+env:
+  APPLY_FIXES: all
+  APPLY_FIXES_EVENT: pull_request
+  APPLY_FIXES_MODE: commit
 
 jobs:
   setup:
@@ -14,7 +18,8 @@ jobs:
       - name: Cancel Duplicate Jobs
         uses: fkirc/skip-duplicate-actions@v3.4.1
         with:
-          github_token: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ github.token }}
+          github_token: ${{ (secrets.GROWTHAT_BOT_TOKEN || github.token) }}
+          cancel_others: true
 
   test:
     name: Test
@@ -207,26 +212,63 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2.3.4
         with:
-          token: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ github.token }}
           fetch-depth: 0
+          token: ${{ (secrets.GROWTHAT_BOT_TOKEN || github.token) }}
 
       # Mega-Linter
       - name: Mega-Linter
-        id: ml
+        id: mega-linter-action
         # You can override Mega-Linter flavor used to have faster performances
         # More info at https://nvuillam.github.io/mega-linter/flavors/
         uses: nvuillam/mega-linter@v4.46.0
         env:
           # All available variables are described in documentation
           # https://nvuillam.github.io/mega-linter/configuration/
-          APPLY_FIXES: all
-          APPLY_FIXES_EVENT: pull_request
-          APPLY_FIXES_MODE: commit
           GITHUB_TOKEN: ${{ github.token }}
+          PAT: ${{ (secrets.GROWTHAT_BOT_TOKEN || github.token) }}
+          # See all available reporters at https://nvuillam.github.io/mega-linter/reporters/
+          CONFIG_REPORTER: true
+          EMAIL_REPORTER: false
+          FILEIO_REPORTER: false
+          GITHUB_COMMENT_REPORTER: true
+          GITHUB_STATUS_REPORTER: true
+          JSON_REPORTER: true
+          TAP_REPORTER: true
+          TEXT_REPORTER: true
+          UPDATED_SOURCES_REPORTER: true
+          
+
+      # - name: Install Nix
+      #   uses: cachix/install-nix-action@v14
+
+      # - name: Build Nix Dependencies
+      #   run: |
+      #     nix-shell shell.nix --run "echo 'Successfully built nix dependencies.'"
+
+      # - name: Install Node.js dependencies
+      #   run: |
+      #     nix-shell shell.nix --run "npm ci"
+
+      # - name: Run Mega-Linter
+      #   env:
+      #     GITHUB_COMMENT_REPORTER: true
+      #     GITHUB_STATUS_REPORTER: true
+      #     GITHUB_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN || github.token }}
+      #     JSON_REPORTER: true
+      #     TAP_REPORTER: true
+      #     TEXT_REPORTER: true
+      #   run: |
+      #     nix-shell shell.nix --run "npx --no mega-linter-runner"
+      - if: ${{ !env.ACT }} && (steps.mega-linter-action.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix'))
+        run: |
+          echo "pull_request"
+      - if: ${{ !env.ACT }} && (steps.mega-linter-action.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/main' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix'))
+        run: |
+          echo "commit"          
 
       # Upload Mega-Linter artifacts
       - name: Archive production artifacts
-        if: ${{ success() }} || ${{ failure() }}
+        if: ${{ !env.ACT }} && (success() || failure())
         uses: actions/upload-artifact@v2
         with:
           name: Mega-Linter reports
@@ -236,42 +278,44 @@ jobs:
 
       # Create pull request if applicable (for now works only on PR from same repository, not from forks)
       - name: Create Pull Request with applied fixes
-        id: cpr
-        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        id: create-pull-request-action
+        if: ${{ !env.ACT }} && (steps.mega-linter-action.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix'))
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ github.token }}
+          token: ${{ (secrets.GROWTHAT_BOT_TOKEN || github.token) }}
           commit-message: "[Mega-Linter] Apply linters automatic fixes"
-          title: "[Mega-Linter] Apply linters automatic fixes"
+          title: "style(mega-linter): apply linter fixes"
           labels: bot
+          base: ${{ github.head_ref }}
 
       - name: Create PR output
-        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        if: ${{ !env.ACT }} && (steps.mega-linter-action.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'pull_request' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix'))
         run: |
-          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+          echo "Pull Request Number - ${{ steps.create-pull-request-action.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.create-pull-request-action.outputs.pull-request-url }}"
 
       # Push new commit if applicable (for now works only on PR from same repository, not from forks)
       - name: Prepare commit
-        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/master' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        if: ${{ !env.ACT }} && (steps.mega-linter-action.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/main' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix'))
         run: sudo chown -Rc $UID .git/
 
       - name: Commit and push applied linter fixes
-        if: steps.ml.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/master' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix')
+        if: ${{ !env.ACT }} && (steps.mega-linter-action.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/main' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix'))
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
-          commit_message: "[Mega-Linter] Apply linters fixes"
+          commit_message: "style(mega-linter): apply linter fixes"
 
   dry-run-release:
     name: Dry Run Release
     runs-on: ubuntu-20.04
+    needs: setup
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
-          # persist-credentials: false
+          persist-credentials: false
 
       - name: Install Nix
         uses: cachix/install-nix-action@v14
@@ -286,14 +330,11 @@ jobs:
 
       - name: Release
         env:
-          GH_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN }} || ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ secrets.GROWTHAT_BOT_TOKEN || github.token }}
           GIT_AUTHOR_NAME: ${{ secrets.GROWTHAT_BOT_NAME }}
           GIT_AUTHOR_EMAIL: ${{ secrets.GROWTHAT_BOT_EMAIL }}
           GIT_COMMITTER_NAME: ${{ secrets.GROWTHAT_BOT_NAME }}
           GIT_COMMITTER_EMAIL: ${{ secrets.GROWTHAT_BOT_EMAIL }}
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }}
-          echo ${{ github.token }}
-          echo ${{ env.GITHUB_TOKEN }}
           nix-shell shell.cd.nix --run "npm run release-dry-run"

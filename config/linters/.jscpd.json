@@ -3,7 +3,6 @@
   "reporters": ["html", "markdown"],
   "gitignore": true,
   "ignore": [
-    "**/modules/**",
     "**/node_modules/**",
     "**/report/**",
     "**/.direnv/**",
