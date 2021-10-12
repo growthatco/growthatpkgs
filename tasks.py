@@ -21,7 +21,7 @@ cfgpath = os.path.join(rootdir, ".env.yaml")
 if not os.path.isfile(cfgpath):
     config.generate_config(rootdir)
 
-cfg = Config()
+cfg = Config(defaults={"stage": "development"})
 cfg.set_runtime_path(cfgpath)
 cfg.load_runtime()
 
@@ -43,6 +43,7 @@ def _pre(context):
     # development environment
     os.environ["PROJECT_SYSTEM"] = platform.system().lower()
     os.environ["PROJECT_ARCH"] = platform.machine().lower()
+    generate(context)
 
 
 ns.add_task(_pre)
@@ -51,91 +52,14 @@ ns.add_task(_pre)
 # === Collections ===
 # ===================
 
-# === Act ===
-
-
-@task(default=True, name="all")
-def act_all(context):
-    """
-    Trigger all Github Actions dry-runs.
-    """
-    act_pull_request(context)
-    act_push(context)
-
-
-@task(
-    name="pull-request",
-    aliases=["pr"],
-    help={
-        "dryrun": "Enable dryrun mode",
-        "job": "Run specified job",
-        "list": "List available jobs",
-        "verbose": "Enable verbose output",
-    },
-    optional=["job"],
-)
-def act_pull_request(context, dryrun=False, job=None, list=False, verbose=False):
-    """
-    Trigger all `pull_request` Github Action workflows on the current branch
-    """
-    flags = [
-        f"--dryrun={str(dryrun).lower()}",
-        f"--env DEFAULT_WORKSPACE={rootdir}",
-        f"--env MEGALINTER_VOLUME_ROOT={rootdir}",
-        f"--list={str(list).lower()}",
-        f"--verbose={str(verbose).lower()}",
-        f"--secret GITHUB_TOKEN={os.environ['GITHUB_TOKEN']}",
-    ]
-
-    if job:
-        context.run(f"act pull_request --job={job} {' '.join(flags)} --insecure-secrets")
-    else:
-        context.run(f"act pull_request {' '.join(flags)}")
-
-
-@task(
-    name="push",
-    help={
-        "dryrun": "Enable dryrun mode",
-        "job": "Run specified job",
-        "list": "List available jobs",
-        "verbose": "Enable verbose output",
-    },
-    optional=["job"],
-)
-def act_push(context, dryrun=False, job=None, list=False, verbose=False):
-    """
-    Trigger all `push` Github Action workflows on the current branch.
-    """
-    flags = [
-        f"--dryrun={str(dryrun).lower()}",
-        f"--env DEFAULT_WORKSPACE={rootdir}",
-        f"--env MEGALINTER_VOLUME_ROOT={rootdir}",
-        f"--list={str(list).lower()}",
-        f"--verbose={str(verbose).lower()}",
-        "--secret-file '.env'",
-    ]
-
-    if job:
-        context.run(f"act push --job={job} {' '.join(flags)}")
-    else:
-        context.run(f"act push {' '.join(flags)}")
-
-
-act = Collection("act", act_all)
-
-act.add_task(act_pull_request)
-act.add_task(act_push)
-
-ns.add_collection(act)
 
 # === Generate ===
 
 
 @task(default=True, name="all")
-def generate_all(context):
+def generate(context):
     """
-    Trigger all generators
+    Trigger all generators.
     """
     generate_config(context)
     generate_linters(context)
@@ -161,59 +85,127 @@ def generate_linters(context):
     linters.generate_linters(rootdir)
 
 
-generate = Collection("generate", generate_all)
+generate_col = Collection("generate", generate)
 
-generate.add_task(generate_config)
-generate.add_task(generate_linters)
+generate_col.add_task(generate_config)
+generate_col.add_task(generate_linters)
 
-ns.add_collection(generate)
+ns.add_collection(generate_col)
 
 
-# === Release ===
+# === Dry ===
 
 
 @task(pre=[_pre], default=True, name="all")
-def release_all(context):
+def dry(context):
     """
-    Run all `release` tasks
+    Run all `dry` tasks.
     """
-    release_git_all(context)
+    dry_release(context)
+    dry_act(context)
 
 
-@task(pre=[_pre], name="git")
-def release_git_all(context):
-    """
-    Run all `git` release tasks
-    """
-    release_git_semantic_relase_dry_run(context)
-
-
-@task(pre=[_pre], name="dry-run", aliases=["dr"])
-def release_git_semantic_relase_dry_run(context):
+@task(pre=[_pre], name="release")
+def dry_release(context):
     """
     Trigger a new git dry run release via `semantic-release`.
     """
     context.run("npm run release-dry-run")
 
 
-release = Collection("release", release_all)
+@task(pre=[_pre], default=True, name="all")
+def dry_act(context):
+    """
+    Trigger all Github Actions dry-runs.
+    """
+    dry_act_pull_request(context)
+    dry_act_push(context)
 
-release_git = Collection("git", release_all)
 
-release_git.add_task(release_git_semantic_relase_dry_run)
+@task(
+    pre=[_pre],
+    name="pull-request",
+    aliases=["pr"],
+    help={
+        "dryrun": "Enable dryrun mode",
+        "job": "Run specified job",
+        "list": "List available jobs",
+        "verbose": "Enable verbose output",
+    },
+    optional=["job"],
+)
+def dry_act_pull_request(context, dryrun=False, job=None, list=False, verbose=False):
+    """
+    Trigger all `pull_request` Github Action workflows on the current branch.
+    """
+    flags = [
+        f"--dryrun={str(dryrun).lower()}",
+        f"--env DEFAULT_WORKSPACE={rootdir}",
+        f"--env MEGALINTER_VOLUME_ROOT={rootdir}",
+        f"--list={str(list).lower()}",
+        f"--verbose={str(verbose).lower()}",
+        f"--secret GITHUB_TOKEN={os.environ['GITHUB_TOKEN']}",
+    ]
 
-release.add_collection(release_git)
+    if job:
+        context.run(
+            f"act pull_request --job={job} {' '.join(flags)} --insecure-secrets"
+        )
+    else:
+        context.run(f"act pull_request {' '.join(flags)}")
 
-ns.add_collection(release)
+
+@task(
+    pre=[_pre],
+    name="push",
+    help={
+        "dryrun": "Enable dryrun mode",
+        "job": "Run specified job",
+        "list": "List available jobs",
+        "verbose": "Enable verbose output",
+    },
+    optional=["job"],
+)
+def dry_act_push(context, dryrun=False, job=None, list=False, verbose=False):
+    """
+    Trigger all `push` Github Action workflows on the current branch.
+    """
+    flags = [
+        f"--dryrun={str(dryrun).lower()}",
+        f"--env DEFAULT_WORKSPACE={rootdir}",
+        f"--env MEGALINTER_VOLUME_ROOT={rootdir}",
+        f"--list={str(list).lower()}",
+        f"--verbose={str(verbose).lower()}",
+        f"--secret GITHUB_TOKEN={os.environ['GITHUB_TOKEN']}",
+    ]
+
+    if job:
+        context.run(f"act push --job={job} {' '.join(flags)}")
+    else:
+        context.run(f"act push {' '.join(flags)}")
+
+
+dry_col = Collection("dry", dry)
+
+dry_col.add_task(dry_release)
+
+dry_act_col = Collection("act", dry_act)
+
+dry_act_col.add_task(dry_act_pull_request)
+dry_act_col.add_task(dry_act_push)
+
+dry_col.add_collection(dry_act_col)
+
+ns.add_collection(dry_col)
 
 
 # === Update ===
 
 
 @task(pre=[_pre], default=True, name="all")
-def update_all(context):
+def update(context):
     """
-    Run all `update` tasks
+    Run all `update` tasks.
     """
     update_niv(context)
     update_npm(context)
@@ -223,7 +215,7 @@ def update_all(context):
 @task(pre=[_pre], name="niv")
 def update_niv(context):
     """
-    Update niv dependencies
+    Update niv dependencies.
     """
     context.run("niv update niv; niv update nixpkgs")
 
@@ -231,7 +223,7 @@ def update_niv(context):
 @task(pre=[_pre], name="npm")
 def update_npm(context):
     """
-    Update npm packages
+    Update npm packages.
     """
     context.run("npm run update")
 
@@ -245,13 +237,13 @@ def update_poetry(context):
     context.run("poetry install")
 
 
-update = Collection("update", update_all)
+update_col = Collection("update", update)
 
-update.add_task(update_niv)
-update.add_task(update_npm)
-update.add_task(update_poetry)
+update_col.add_task(update_niv)
+update_col.add_task(update_npm)
+update_col.add_task(update_poetry)
 
-ns.add_collection(update)
+ns.add_collection(update_col)
 
 
 # =============
@@ -270,7 +262,9 @@ def clean(context):
     """
     context.run("git clean -Xdf")
     context.run("rm -rf ./.github/linters/*")
-    context.run("rm -rf ./modules/*")
+
+
+ns.add_task(clean)
 
 
 # === Code ===
@@ -290,17 +284,16 @@ ns.add_task(code)
 # === Init ===
 
 
-@task(pre=[_pre])
+@task()
 def init(context):
     """
-    Initialize build dependencies
+    Initialize build dependencies.
     """
     context.run("npm install")
-    generate_all(context)
+    generate(context)
 
 
 ns.add_task(init)
-
 
 # === Lint ===
 
