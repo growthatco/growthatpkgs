@@ -243,7 +243,6 @@ jobs:
           TAP_REPORTER: true
           TEXT_REPORTER: true
           UPDATED_SOURCES_REPORTER: true
-          
 
       # - name: Install Nix
       #   uses: cachix/install-nix-action@v14
