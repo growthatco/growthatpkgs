@@ -236,7 +236,6 @@ jobs:
           TAP_REPORTER: true
           TEXT_REPORTER: true
           UPDATED_SOURCES_REPORTER: true
-          
 
       # - name: Install Nix
       #   uses: cachix/install-nix-action@v14
@@ -264,7 +263,7 @@ jobs:
           echo "pull_request"
       - if: ${{ !env.ACT }} && (steps.mega-linter-action.outputs.has_updated_sources == 1 && (env.APPLY_FIXES_EVENT == 'all' || env.APPLY_FIXES_EVENT == github.event_name) && env.APPLY_FIXES_MODE == 'commit' && github.ref != 'refs/heads/main' && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && !contains(github.event.head_commit.message, 'skip fix'))
         run: |
-          echo "commit"          
+          echo "commit"
 
       # Upload Mega-Linter artifacts
       - name: Archive production artifacts
