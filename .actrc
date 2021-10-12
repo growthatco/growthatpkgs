@@ -1,2 +1,2 @@
---platform ubuntu-20.04=ghcr.io/catthehacker/ubuntu:act-20.04
+--platform ubuntu-20.04=nvuillam/mega-linter:v4.46.0
 --privileged

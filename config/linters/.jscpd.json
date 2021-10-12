@@ -13,6 +13,13 @@
     "**/.venv'/**",
     "**/*cache*/**",
     "**/*.svg",
-    "**/.prettierrc.yaml"
+    "**/.cspell.json",
+    "**/.jscpd.json",
+    "**/.prettierignore",
+    "**/.prettierrc.yaml",
+    "**/.secretlintignore",
+    "**/.secretlintrc.json",
+    "**/.secretlintignore",
+    "**/.yamllint.yaml"
   ]
 }

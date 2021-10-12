@@ -22,4 +22,3 @@ nixpkgs.mkShell rec {
     unset PYTHONPATH
   '';
 }
-

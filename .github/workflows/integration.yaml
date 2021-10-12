@@ -53,6 +53,13 @@ jobs:
           fetch-depth: 0
           token: ${{ (secrets.GROWTHAT_BOT_TOKEN || github.token) }}
 
+      - name: Edit `GITHUB_PATH`
+        if: ${{ env.ACT }}
+        run: |
+          echo "/node_modules/.bin" >> $GITHUB_PATH
+          echo "/go/bin" >> $GITHUB_PATH
+          echo "/nix/var/nix/profiles/default/bin" >> $GITHUB_PATH
+
       # Mega-Linter
       - name: Mega-Linter
         id: mega-linter-action
@@ -64,7 +71,7 @@ jobs:
           # https://nvuillam.github.io/mega-linter/configuration/
           GITHUB_TOKEN: ${{ github.token }}
           PAT: ${{ (secrets.GROWTHAT_BOT_TOKEN || github.token) }}
-          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ALL_CODEBASE: true
           # See all available reporters at https://nvuillam.github.io/mega-linter/reporters/
           CONFIG_REPORTER: true
           EMAIL_REPORTER: false

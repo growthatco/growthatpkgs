@@ -10,12 +10,12 @@ ENABLE_LINTERS:
   - JSON_PRETTIER
   - NIX_NIXPKGS_FMT_ALPINE
   - PYTHON_BLACK
-  - SPELL_MISSPELL
+  - SPELL_CSPELL
   - YAML_PRETTIER
   - YAML_YAMLLINT
 
-# PLUGINS:
-#   - https://raw.githubusercontent.com/growthatco/mega-linter-plugins/main/plugins/mega-linter-plugin-nixpkgs-fmt/nixpkgs-fmt.megalinter-descriptor.yml
+PLUGINS:
+  - https://raw.githubusercontent.com/growthatco/mega-linter-plugins/main/plugins/mega-linter-plugin-nixpkgs-fmt/nixpkgs-fmt.megalinter-descriptor.yml
 
 DEFAULT_BRANCH: main
 FLAVOR_SUGGESTIONS: false
@@ -39,6 +39,8 @@ EXCLUDED_DIRECTORIES:
   - .direnv
   - modules
 
+SPELL_CSPELL_ARGUMENTS: --no-must-find-files
+
 # Reporters
 # See all available variables at https://nvuillam.github.io/mega-linter/reporters/
 CONFIG_REPORTER: true
@@ -50,3 +52,7 @@ JSON_REPORTER: false
 TAP_REPORTER: false
 TEXT_REPORTER: true
 UPDATED_SOURCES_REPORTER: false
+
+POST_COMMANDS:
+  - command: nix-channel --update
+    cwd: "root"

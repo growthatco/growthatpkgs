@@ -9,7 +9,7 @@ def generate_config(rootdir, stage="development"):
     settingsdir = os.path.join(rootdir, "config", "settings")
 
     # Combine the default, project stage, and tool version settings
-    # into a global configuation file: .env.json.
+    # into a global configuration file: .env.json.
     default_settings_path = os.path.join(settingsdir, "default.json")
     default_settings_str = xfile.get(default_settings_path)
     default_settings_json = json.loads(default_settings_str)
