@@ -148,9 +148,7 @@ def dry_act_pull_request(context, dryrun=False, job=None, list=False, verbose=Fa
     ]
 
     if job:
-        context.run(
-            f"act pull_request --job={job} {' '.join(flags)} --insecure-secrets"
-        )
+        context.run(f"act pull_request --job={job} {' '.join(flags)}")
     else:
         context.run(f"act pull_request {' '.join(flags)}")
 
