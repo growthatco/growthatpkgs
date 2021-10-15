@@ -6,7 +6,7 @@
     "lint": "mega-linter-runner",
     "prepare": "is-ci || husky install",
     "release": "semantic-release --ci --extends ./.release.json",
-    "release-dry-run": "semantic-release --no-ci --extends ./.release.json",
+    "release-dry-run": "semantic-release --no-ci --dry-run --extends ./.release.json",
     "update": "run-s \"update:*\"",
     "update:upgrade": "ncu --upgrade --packageFile package.json",
     "update:install": "npm install"
