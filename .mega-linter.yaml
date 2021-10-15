@@ -1,3 +1,4 @@
+---
 # Configuration file for Mega-Linter
 # See all available variables at https://nvuillam.github.io/mega-linter/configuration/ and in linters documentation
 
@@ -7,9 +8,9 @@ ENABLE_LINTERS:
   - COPYPASTE_JSCPD
   - CREDENTIALS_SECRETLINT
   - JSON_PRETTIER
-  - NIX_NIXPKGS_FMT_ALPINE
+  - NIX_NIXPKGS_FMT
   - PYTHON_BLACK
-  - SPELL_MISSPELL
+  - SPELL_CSPELL
   - YAML_PRETTIER
   - YAML_YAMLLINT
 
@@ -37,6 +38,8 @@ BASH_SHFMT_FILE_EXTENSIONS:
 EXCLUDED_DIRECTORIES:
   - .direnv
   - modules
+
+SPELL_CSPELL_ARGUMENTS: --no-must-find-files
 
 # Reporters
 # See all available variables at https://nvuillam.github.io/mega-linter/reporters/

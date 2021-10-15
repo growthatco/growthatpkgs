@@ -63,20 +63,3 @@ def json2env(jsonstr: str, _key="", _nested=False):
             entries separated by newlines.
             """
             return "\n".join(_env)
-
-
-"""
-Reads the contents of a `.tool-versions` file and produces
-escaped shell commands for setting environment variables.
-
-
-Read more about the `.tool-versions` spec here:
-https://asdf-vm.com/#/core-configuration?id=tool-versions
-"""
-
-
-def toolversions2env(tvstr: str):
-    tvstr = re.sub(r"-", "_", tvstr)
-    tvstr = re.sub(r" ", "_VERSION=", tvstr)
-    tvstr = tvstr.upper()
-    return tvstr

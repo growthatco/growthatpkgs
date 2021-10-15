@@ -12,4 +12,4 @@ rules:
     level: warning
     type: unix
   line-length:
-    max: 500
+    max: 9999

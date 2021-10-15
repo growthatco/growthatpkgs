@@ -16,6 +16,7 @@ nixpkgs.mkShell rec {
     growthatpkgs.poetry
     growthatpkgs.python
     growthatpkgs.rnix-lsp
+    growthatpkgs.shfmt
   ];
   shellHook = ''
     unset PYTHONPATH

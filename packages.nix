@@ -98,6 +98,14 @@ rec {
     }
     { };
 
+  lorri = lorri-1-5-0;
+  lorri-1-5-0 = util.init
+    {
+      tool = "lorri";
+      version = "1.5.0";
+    }
+    { };
+
   nixpkgs-fmt = nixpkgs-fmt-1-2-0;
   nixpkgs-fmt-1-2-0 = util.init
     {
@@ -150,7 +158,7 @@ rec {
       tool = "rnix-lsp";
       version = "0.2.1";
     }
-    { };    
+    { };
 
   rust = rust-1-52-1;
   rust-1-52-1 = util.init

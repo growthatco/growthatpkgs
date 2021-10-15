@@ -1,10 +1,10 @@
 {
   "recommendations": [
-    "B4dM4n.nixpkgs-fmt",
-    "esbenp.prettier-vscode",
-    "foxundermoon.shell-format",
-    "jnoortheen.nix-ide",
+    "timonwong.shellcheck",
     "ms-python.python",
-    "timonwong.shellcheck"
+    "jnoortheen.nix-ide",
+    "foxundermoon.shell-format",
+    "esbenp.prettier-vscode",
+    "streetsidesoftware.code-spell-checker"
   ]
 }
