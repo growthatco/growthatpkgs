@@ -22,6 +22,7 @@ nixpkgs.mkShell rec {
     growthatpkgs.helm
     growthatpkgs.jq
     growthatpkgs.k9s
+    growthatpkgs.lorri
     growthatpkgs.nixpkgs-fmt
     growthatpkgs.nodejs
     growthatpkgs.nomad
