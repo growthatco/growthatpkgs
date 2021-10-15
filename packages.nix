@@ -98,6 +98,14 @@ rec {
     }
     { };
 
+  lorri = lorri-1-5-0;
+  lorri-1-5-0 = util.init
+    {
+      tool = "lorri";
+      version = "1.5.0";
+    }
+    { };
+
   nixpkgs-fmt = nixpkgs-fmt-1-2-0;
   nixpkgs-fmt-1-2-0 = util.init
     {

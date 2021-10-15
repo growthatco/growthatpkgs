@@ -42,10 +42,6 @@ jobs:
     name: Mega-Linter
     runs-on: ubuntu-20.04
     needs: setup
-    env:
-      APPLY_FIXES: all
-      APPLY_FIXES_EVENT: pull_request
-      APPLY_FIXES_MODE: commit
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2.3.4
@@ -232,6 +228,13 @@ jobs:
         id: test-k9s
         run: |
           nix-shell shell.ci.nix --pure --run "k9s version"
+
+      # === lorri ===
+
+      - name: Test `lorri`
+        id: test-lorri
+        run: |
+          nix-shell shell.ci.nix --pure --run "lorri --version"
 
       # === nodejs ===
 

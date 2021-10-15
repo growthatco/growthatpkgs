@@ -48,6 +48,7 @@
     "jq",
     "k9s",
     "kubernetes",
+    "lorri",
     "mkdirp",
     "nixos",
     "nixpkgs",
