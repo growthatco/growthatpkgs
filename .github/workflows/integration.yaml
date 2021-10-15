@@ -53,35 +53,18 @@ jobs:
           fetch-depth: 0
           token: ${{ (secrets.GROWTHAT_BOT_TOKEN || github.token) }}
 
-      - name: Edit `GITHUB_PATH`
-        if: ${{ env.ACT }}
-        run: |
-          echo "/node_modules/.bin" >> $GITHUB_PATH
-          echo "/go/bin" >> $GITHUB_PATH
-          echo "/nix/var/nix/profiles/default/bin" >> $GITHUB_PATH
-
-      # Mega-Linter
-      - name: Mega-Linter
+      - name: Run Mega-Linter
         id: mega-linter-action
-        # You can override Mega-Linter flavor used to have faster performances
-        # More info at https://nvuillam.github.io/mega-linter/flavors/
-        uses: nvuillam/mega-linter@v4.46.0
         env:
-          # All available variables are described in documentation
-          # https://nvuillam.github.io/mega-linter/configuration/
           GITHUB_TOKEN: ${{ github.token }}
           PAT: ${{ (secrets.GROWTHAT_BOT_TOKEN || github.token) }}
-          VALIDATE_ALL_CODEBASE: true
-          # See all available reporters at https://nvuillam.github.io/mega-linter/reporters/
-          CONFIG_REPORTER: true
-          EMAIL_REPORTER: false
-          FILEIO_REPORTER: false
-          GITHUB_COMMENT_REPORTER: true
-          GITHUB_STATUS_REPORTER: true
-          JSON_REPORTER: true
-          TAP_REPORTER: true
-          TEXT_REPORTER: true
-          UPDATED_SOURCES_REPORTER: true
+        run: |
+          npx mega-linter-runner \
+            --env APPLY_FIXES_EVENT=pull_request \
+            --env APPLY_FIXES_MODE=commit \
+            --env GITHUB_TOKEN=${{ env.GITHUB_TOKEN }} \
+            --env PAT=${{ env.PAT }} \
+            --fix
 
       # Upload Mega-Linter artifacts
       - name: Archive production artifacts

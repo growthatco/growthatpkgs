@@ -52,7 +52,3 @@ JSON_REPORTER: false
 TAP_REPORTER: false
 TEXT_REPORTER: true
 UPDATED_SOURCES_REPORTER: false
-
-POST_COMMANDS:
-  - command: nix-channel --update
-    cwd: "root"
