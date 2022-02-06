@@ -114,7 +114,13 @@ rec {
     }
     { };
 
-  nodejs = nodejs-16-4-0;
+  nodejs = nodejs-16-13-1;
+  nodejs-16-13-1 = util.init
+    {
+      tool = "nodejs";
+      version = "16.13.1";
+    }
+    { };
   nodejs-16-4-0 = util.init
     {
       tool = "nodejs";
