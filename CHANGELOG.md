@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/growthatco/growthatpkgs/compare/v1.1.0...v1.2.0) (2022-02-06)
+
+
+### Features
+
+* **nodejs:** add version 16.13.1 ([350713f](https://github.com/growthatco/growthatpkgs/commit/350713f2204b65b3839b8200e7a92720e8601c29))
+
 # [1.1.0](https://github.com/growthatco/growthatpkgs/compare/v1.0.0...v1.1.0) (2021-10-15)
 
 
