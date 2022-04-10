@@ -50,11 +50,17 @@ rec {
     }
     { };
 
-  go = go-1-16-5;
+  go = go-1-17-5;
   go-1-16-5 = util.init
     {
       tool = "go";
       version = "1.16.5";
+    }
+    { };
+  go-1-17-5 = util.init
+    {
+      tool = "go";
+      version = "1.17.5";
     }
     { };
 
