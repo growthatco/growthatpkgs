@@ -120,7 +120,7 @@ rec {
     }
     { };
 
-  nodejs = nodejs-16-13-1;
+  nodejs = nodejs-17-3-0;
   nodejs-16-13-1 = util.init
     {
       tool = "nodejs";
@@ -133,6 +133,12 @@ rec {
       version = "16.4.0";
     }
     { };
+  nodejs-17-3-0 = util.init
+    {
+      tool = "nodejs";
+      version = "17.3.0";
+    }
+    { };    
 
   nomad = nomad-1-0-8;
   nomad-1-0-8 = util.init
